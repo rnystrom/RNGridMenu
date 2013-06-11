@@ -1,0 +1,396 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8619404D1767A8480052C089 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619404C1767A8480052C089 /* UIKit.framework */; };
+		8619404F1767A8480052C089 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619404E1767A8480052C089 /* Foundation.framework */; };
+		861940511767A8480052C089 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861940501767A8480052C089 /* CoreGraphics.framework */; };
+		861940571767A8480052C089 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 861940551767A8480052C089 /* InfoPlist.strings */; };
+		861940591767A8480052C089 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 861940581767A8480052C089 /* main.m */; };
+		8619405D1767A8480052C089 /* RNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8619405C1767A8480052C089 /* RNAppDelegate.m */; };
+		8619405F1767A8480052C089 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 8619405E1767A8480052C089 /* Default.png */; };
+		861940611767A8480052C089 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940601767A8480052C089 /* Default@2x.png */; };
+		861940631767A8480052C089 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940621767A8480052C089 /* Default-568h@2x.png */; };
+		861940661767A8480052C089 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861940641767A8480052C089 /* MainStoryboard_iPhone.storyboard */; };
+		861940691767A8480052C089 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861940671767A8480052C089 /* MainStoryboard_iPad.storyboard */; };
+		8619406C1767A8480052C089 /* RNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8619406B1767A8480052C089 /* RNViewController.m */; };
+		861940741767A8B20052C089 /* RNAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 861940731767A8B20052C089 /* RNAlertView.m */; };
+		861940771767AA740052C089 /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 861940761767AA740052C089 /* UIImage+Blur.m */; };
+		861940791767AA8E0052C089 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861940781767AA8E0052C089 /* QuartzCore.framework */; };
+		8619407B1767AA920052C089 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619407A1767AA920052C089 /* Accelerate.framework */; };
+		8619407E1767AD5E0052C089 /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 8619407D1767AD5E0052C089 /* UIView+Screenshot.m */; };
+		861940801767C3130052C089 /* Profile_256.png in Resources */ = {isa = PBXBuildFile; fileRef = 8619407F1767C3130052C089 /* Profile_256.png */; };
+		8619408B1767CBB80052C089 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940821767CBB80052C089 /* arrow.png */; };
+		8619408C1767CBB80052C089 /* attachment.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940831767CBB80052C089 /* attachment.png */; };
+		8619408D1767CBB80052C089 /* block.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940841767CBB80052C089 /* block.png */; };
+		8619408E1767CBB80052C089 /* bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940851767CBB80052C089 /* bluetooth.png */; };
+		8619408F1767CBB80052C089 /* cube.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940861767CBB80052C089 /* cube.png */; };
+		861940901767CBB80052C089 /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940871767CBB80052C089 /* download.png */; };
+		861940911767CBB80052C089 /* enter.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940881767CBB80052C089 /* enter.png */; };
+		861940921767CBB80052C089 /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940891767CBB80052C089 /* file.png */; };
+		861940951767CCBE0052C089 /* github.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940941767CCBE0052C089 /* github.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		861940491767A8480052C089 /* RNAlertView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNAlertView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8619404C1767A8480052C089 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		8619404E1767A8480052C089 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		861940501767A8480052C089 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		861940541767A8480052C089 /* RNAlertView-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RNAlertView-Info.plist"; sourceTree = "<group>"; };
+		861940561767A8480052C089 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		861940581767A8480052C089 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8619405A1767A8480052C089 /* RNAlertView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNAlertView-Prefix.pch"; sourceTree = "<group>"; };
+		8619405B1767A8480052C089 /* RNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNAppDelegate.h; sourceTree = "<group>"; };
+		8619405C1767A8480052C089 /* RNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNAppDelegate.m; sourceTree = "<group>"; };
+		8619405E1767A8480052C089 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		861940601767A8480052C089 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		861940621767A8480052C089 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		861940651767A8480052C089 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		861940681767A8480052C089 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
+		8619406A1767A8480052C089 /* RNViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNViewController.h; sourceTree = "<group>"; };
+		8619406B1767A8480052C089 /* RNViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNViewController.m; sourceTree = "<group>"; };
+		861940721767A8B20052C089 /* RNAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNAlertView.h; sourceTree = "<group>"; };
+		861940731767A8B20052C089 /* RNAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNAlertView.m; sourceTree = "<group>"; };
+		861940751767AA740052C089 /* UIImage+Blur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Blur.h"; path = "RNAlertView/UIImage+Blur.h"; sourceTree = "<group>"; };
+		861940761767AA740052C089 /* UIImage+Blur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Blur.m"; path = "RNAlertView/UIImage+Blur.m"; sourceTree = "<group>"; };
+		861940781767AA8E0052C089 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8619407A1767AA920052C089 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		8619407C1767AD5E0052C089 /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Screenshot.h"; path = "RNAlertView/UIView+Screenshot.h"; sourceTree = "<group>"; };
+		8619407D1767AD5E0052C089 /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Screenshot.m"; path = "RNAlertView/UIView+Screenshot.m"; sourceTree = "<group>"; };
+		8619407F1767C3130052C089 /* Profile_256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Profile_256.png; sourceTree = "<group>"; };
+		861940821767CBB80052C089 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		861940831767CBB80052C089 /* attachment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attachment.png; sourceTree = "<group>"; };
+		861940841767CBB80052C089 /* block.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block.png; sourceTree = "<group>"; };
+		861940851767CBB80052C089 /* bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bluetooth.png; sourceTree = "<group>"; };
+		861940861767CBB80052C089 /* cube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cube.png; sourceTree = "<group>"; };
+		861940871767CBB80052C089 /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
+		861940881767CBB80052C089 /* enter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enter.png; sourceTree = "<group>"; };
+		861940891767CBB80052C089 /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
+		861940941767CCBE0052C089 /* github.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = github.png; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		861940461767A8480052C089 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8619407B1767AA920052C089 /* Accelerate.framework in Frameworks */,
+				861940791767AA8E0052C089 /* QuartzCore.framework in Frameworks */,
+				8619404D1767A8480052C089 /* UIKit.framework in Frameworks */,
+				8619404F1767A8480052C089 /* Foundation.framework in Frameworks */,
+				861940511767A8480052C089 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		861940401767A8480052C089 = {
+			isa = PBXGroup;
+			children = (
+				8619407C1767AD5E0052C089 /* UIView+Screenshot.h */,
+				8619407D1767AD5E0052C089 /* UIView+Screenshot.m */,
+				861940751767AA740052C089 /* UIImage+Blur.h */,
+				861940761767AA740052C089 /* UIImage+Blur.m */,
+				861940721767A8B20052C089 /* RNAlertView.h */,
+				861940731767A8B20052C089 /* RNAlertView.m */,
+				861940521767A8480052C089 /* RNAlertView */,
+				8619404B1767A8480052C089 /* Frameworks */,
+				8619404A1767A8480052C089 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8619404A1767A8480052C089 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				861940491767A8480052C089 /* RNAlertView.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8619404B1767A8480052C089 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8619407A1767AA920052C089 /* Accelerate.framework */,
+				861940781767AA8E0052C089 /* QuartzCore.framework */,
+				8619404C1767A8480052C089 /* UIKit.framework */,
+				8619404E1767A8480052C089 /* Foundation.framework */,
+				861940501767A8480052C089 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		861940521767A8480052C089 /* RNAlertView */ = {
+			isa = PBXGroup;
+			children = (
+				861940811767CBB80052C089 /* icons */,
+				8619407F1767C3130052C089 /* Profile_256.png */,
+				8619405B1767A8480052C089 /* RNAppDelegate.h */,
+				8619405C1767A8480052C089 /* RNAppDelegate.m */,
+				861940641767A8480052C089 /* MainStoryboard_iPhone.storyboard */,
+				861940671767A8480052C089 /* MainStoryboard_iPad.storyboard */,
+				8619406A1767A8480052C089 /* RNViewController.h */,
+				8619406B1767A8480052C089 /* RNViewController.m */,
+				861940531767A8480052C089 /* Supporting Files */,
+			);
+			path = RNAlertView;
+			sourceTree = "<group>";
+		};
+		861940531767A8480052C089 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				861940541767A8480052C089 /* RNAlertView-Info.plist */,
+				861940551767A8480052C089 /* InfoPlist.strings */,
+				861940581767A8480052C089 /* main.m */,
+				8619405A1767A8480052C089 /* RNAlertView-Prefix.pch */,
+				8619405E1767A8480052C089 /* Default.png */,
+				861940601767A8480052C089 /* Default@2x.png */,
+				861940621767A8480052C089 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		861940811767CBB80052C089 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				861940821767CBB80052C089 /* arrow.png */,
+				861940831767CBB80052C089 /* attachment.png */,
+				861940841767CBB80052C089 /* block.png */,
+				861940851767CBB80052C089 /* bluetooth.png */,
+				861940861767CBB80052C089 /* cube.png */,
+				861940871767CBB80052C089 /* download.png */,
+				861940881767CBB80052C089 /* enter.png */,
+				861940891767CBB80052C089 /* file.png */,
+				861940941767CCBE0052C089 /* github.png */,
+			);
+			path = icons;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		861940481767A8480052C089 /* RNAlertView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNAlertView" */;
+			buildPhases = (
+				861940451767A8480052C089 /* Sources */,
+				861940461767A8480052C089 /* Frameworks */,
+				861940471767A8480052C089 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RNAlertView;
+			productName = RNAlertView;
+			productReference = 861940491767A8480052C089 /* RNAlertView.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		861940411767A8480052C089 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = RN;
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Ryan Nystrom";
+			};
+			buildConfigurationList = 861940441767A8480052C089 /* Build configuration list for PBXProject "RNAlertView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 861940401767A8480052C089;
+			productRefGroup = 8619404A1767A8480052C089 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				861940481767A8480052C089 /* RNAlertView */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		861940471767A8480052C089 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				861940571767A8480052C089 /* InfoPlist.strings in Resources */,
+				8619405F1767A8480052C089 /* Default.png in Resources */,
+				861940611767A8480052C089 /* Default@2x.png in Resources */,
+				861940631767A8480052C089 /* Default-568h@2x.png in Resources */,
+				861940661767A8480052C089 /* MainStoryboard_iPhone.storyboard in Resources */,
+				861940691767A8480052C089 /* MainStoryboard_iPad.storyboard in Resources */,
+				861940801767C3130052C089 /* Profile_256.png in Resources */,
+				8619408B1767CBB80052C089 /* arrow.png in Resources */,
+				8619408C1767CBB80052C089 /* attachment.png in Resources */,
+				8619408D1767CBB80052C089 /* block.png in Resources */,
+				8619408E1767CBB80052C089 /* bluetooth.png in Resources */,
+				8619408F1767CBB80052C089 /* cube.png in Resources */,
+				861940901767CBB80052C089 /* download.png in Resources */,
+				861940911767CBB80052C089 /* enter.png in Resources */,
+				861940921767CBB80052C089 /* file.png in Resources */,
+				861940951767CCBE0052C089 /* github.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		861940451767A8480052C089 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				861940591767A8480052C089 /* main.m in Sources */,
+				8619405D1767A8480052C089 /* RNAppDelegate.m in Sources */,
+				8619406C1767A8480052C089 /* RNViewController.m in Sources */,
+				861940741767A8B20052C089 /* RNAlertView.m in Sources */,
+				861940771767AA740052C089 /* UIImage+Blur.m in Sources */,
+				8619407E1767AD5E0052C089 /* UIView+Screenshot.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		861940551767A8480052C089 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				861940561767A8480052C089 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		861940641767A8480052C089 /* MainStoryboard_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				861940651767A8480052C089 /* en */,
+			);
+			name = MainStoryboard_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		861940671767A8480052C089 /* MainStoryboard_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				861940681767A8480052C089 /* en */,
+			);
+			name = MainStoryboard_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8619406D1767A8480052C089 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8619406E1767A8480052C089 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		861940701767A8480052C089 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RNAlertView/RNAlertView-Prefix.pch";
+				INFOPLIST_FILE = "RNAlertView/RNAlertView-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		861940711767A8480052C089 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RNAlertView/RNAlertView-Prefix.pch";
+				INFOPLIST_FILE = "RNAlertView/RNAlertView-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		861940441767A8480052C089 /* Build configuration list for PBXProject "RNAlertView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8619406D1767A8480052C089 /* Debug */,
+				8619406E1767A8480052C089 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNAlertView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				861940701767A8480052C089 /* Debug */,
+				861940711767A8480052C089 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 861940411767A8480052C089 /* Project object */;
+}
