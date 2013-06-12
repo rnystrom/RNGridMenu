@@ -116,6 +116,8 @@ An optional header view. Make sure to set the frame height when setting. Same us
 
 I finally got a solid implementation on responding to orientation changes by looking at the source of [<code>MBAlertView</code>](https://github.com/mobitar/MBAlertView). Great project if you haven't seen it.
 
+Sample icons provided by [IcoMoon](http://icomoon.io/).
+
 ## Apps
 
 If you've used this project in a live app, please <a href="mailTo:rnystrom@whoisryannystrom.com">let me know</a>! Nothing makes me happier than seeing someone else take my work and go wild with it.
