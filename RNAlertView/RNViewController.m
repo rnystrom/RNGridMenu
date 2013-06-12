@@ -7,9 +7,10 @@
 //
 
 #import "RNViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface RNViewController ()
-
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @end
 
 @implementation RNViewController
@@ -17,7 +18,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    self.imageView.layer.borderWidth = 2;
+    self.imageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.imageView.layer.cornerRadius = CGRectGetHeight(self.imageView.bounds) / 2;
+    self.imageView.clipsToBounds = YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -31,7 +35,7 @@
 }
 
 - (IBAction)onShowButton:(id)sender {
-    NSInteger numberOfOptions = 9;
+    NSInteger numberOfOptions = 4;
     NSArray *images = @[
                         [UIImage imageNamed:@"arrow"],
                         [UIImage imageNamed:@"attachment"],
@@ -58,4 +62,8 @@
     [av show];
 }
 
+- (void)viewDidUnload {
+    [self setImageView:nil];
+    [super viewDidUnload];
+}
 @end

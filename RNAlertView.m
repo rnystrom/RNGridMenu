@@ -156,7 +156,7 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 @property (nonatomic, strong, readwrite) NSArray *options;
 @property (nonatomic, strong, readwrite) NSArray *images;
 @property (nonatomic, strong) NSMutableArray *optionViews;
-@property (nonatomic, strong) CALayer *blurLayer;
+@property (nonatomic, strong) UIView *blurView;
 @property (nonatomic, strong) UITapGestureRecognizer *superviewTapGesture;
 
 @end
@@ -177,13 +177,14 @@ static void RNAlertViewInit(RNAlertView *self) {
     self.view.opaque = NO;
     self.view.clipsToBounds = YES;
     self.view.layer.cornerRadius = 8;
+    self.view.autoresizingMask = UIViewAutoresizingNone;
     
     CGFloat m34 = 1 / 300.f;
     CATransform3D transform = CATransform3DIdentity;
     transform.m34 = m34;
     self.view.layer.transform = transform;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientationNotification:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
 }
 
 #pragma mark - View Controller
@@ -249,7 +250,7 @@ static void RNAlertViewInit(RNAlertView *self) {
 
 - (void)layoutBlurAndOptions {
     CGRect bounds = self.view.superview.bounds;
-    self.blurLayer.frame = bounds;
+    self.blurView.frame = bounds;
     
     NSInteger rowCount = floorf(sqrtf([self.options count]));
     NSInteger optionCount = [self.options count];
@@ -278,12 +279,12 @@ static void RNAlertViewInit(RNAlertView *self) {
 
 - (void)createScreenshotAndLayout {
     self.view.alpha = 0;
-    self.blurLayer.opacity = 0;
+    self.blurView.alpha = 0;
     UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
     self.view.alpha = 1;
-    self.blurLayer.opacity = 1;
+    self.blurView.alpha = 1;
     UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
-    self.blurLayer.contents = (id) blur.CGImage;
+    self.blurView.layer.contents = (id) blur.CGImage;
     
     [self layoutBlurAndOptions];
 }
@@ -346,23 +347,20 @@ static void RNAlertViewInit(RNAlertView *self) {
     
     UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
     UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
-    
-    CALayer *blurLayer = [CALayer layer];
-    blurLayer.opaque = NO;
-    blurLayer.shadowPath = NULL;
-    blurLayer.contents = (id) blur.CGImage;
-    blurLayer.contentsGravity = kCAGravityResizeAspectFill;
-    self.blurLayer = blurLayer;
+        
+    self.blurView = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].keyWindow.rootViewController.view.bounds];
+    self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.blurView.layer.contents = (id) blur.CGImage;
     
     if(self.addsToWindow) {
-        [window.layer addSublayer:self.blurLayer];
-        [window addSubview:self.view];
+        [window addSubview:self.blurView];
     }
     else {
         UIView *view = [window subviews][0];
-        [view.layer addSublayer:self.blurLayer];
-        [view addSubview:self.view];
+        [view addSubview:self.blurView];
     }
+    
+    [self.blurView addSubview:self.view];
     
     self.superviewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(superviewTapGestureHandler:)];
     [self.view.superview addGestureRecognizer:self.superviewTapGesture];
@@ -373,7 +371,7 @@ static void RNAlertViewInit(RNAlertView *self) {
     opacityAnimation.fromValue = @(0);
     opacityAnimation.toValue = @(1);
     opacityAnimation.duration = self.animationDuration * 0.5f;
-    [self.blurLayer addAnimation:opacityAnimation forKey:@"opacityAnimation"];
+    [self.blurView.layer addAnimation:opacityAnimation forKey:@"opacityAnimation"];
     
     CAKeyframeAnimation *alertScaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
     
@@ -420,14 +418,14 @@ static void RNAlertViewInit(RNAlertView *self) {
                           delay:0
                         options:UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
-                         self.blurLayer.opacity = 0;
+                         self.blurView.alpha = 0;
                          self.view.alpha = 0;
                          self.view.layer.transform = transform;
                      }
                      completion:^(BOOL finished){
                          [self.view.superview removeGestureRecognizer:self.superviewTapGesture];
-                         [self.blurLayer removeFromSuperlayer];
                          [self.view removeFromSuperview];
+                         [self.blurView removeFromSuperview];
                          displayedAlertView = nil;
                      }];
 }
