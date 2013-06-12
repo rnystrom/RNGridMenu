@@ -35,7 +35,7 @@
 }
 
 - (IBAction)onShowButton:(id)sender {
-    [self showList];
+    [self showImagesOnly];
 }
 
 - (void)showImagesOnly {
