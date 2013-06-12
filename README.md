@@ -5,7 +5,7 @@ A grid based alert view with depth inspired by Mailbox and extended for multiple
 
 <p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/rnalertview.gif"/></p>
 
-<p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/options.png"/></p>
+<p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/options.jpg"/></p>
 
 ## Installation ##
 
