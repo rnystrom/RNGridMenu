@@ -302,19 +302,6 @@ static void RNAlertViewInit(RNAlertView *self) {
 
 #pragma mark - Layout
 
-- (void)layoutBlurAndOptions {
-    CGRect bounds = self.view.superview.bounds;
-    self.blurView.frame = bounds;
-    
-    [self styleOptionViews];
-    if (self.alertViewStyle == RNAlertViewStyleGrid) {
-        [self layoutAsGrid];
-    }
-    else if (self.alertViewStyle == RNAlertViewStyleList) {
-        [self layoutAsList];
-    }
-}
-
 - (void)styleOptionViews {
     [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.titleLabel.textColor = self.itemTextColor;
@@ -323,16 +310,41 @@ static void RNAlertViewInit(RNAlertView *self) {
     }];
 }
 
+- (void)layoutBlurAndOptions {
+    CGRect bounds = self.view.superview.bounds;
+    self.blurView.frame = bounds;
+    
+    [self styleOptionViews];
+    
+    if (self.alertViewStyle == RNAlertViewStyleGrid) {
+        [self layoutAsGrid];
+    }
+    else if (self.alertViewStyle == RNAlertViewStyleList) {
+        [self layoutAsList];
+    }
+    
+    CGRect headerFrame = self.headerView.frame;
+    headerFrame.size.width = self.view.bounds.size.width;
+    headerFrame.origin = CGPointZero;
+    self.headerView.frame = headerFrame;
+}
+
 - (void)layoutAsList {
     CGRect bounds = self.view.superview.bounds;
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     CGFloat height = self.itemSize.height * itemCount;
     CGFloat width = self.itemSize.width;
+    
     CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
+    if (self.headerView) {
+        frame.size.height += self.headerView.bounds.size.height;
+    }
     self.view.frame = frame;
     
+    CGFloat headerOffset = self.headerView.bounds.size.height;
+    
     [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
-        optionView.frame = CGRectMake(0, idx * self.itemSize.height, self.itemSize.width, self.itemSize.height);
+        optionView.frame = CGRectMake(0, idx * self.itemSize.height + headerOffset, self.itemSize.width, self.itemSize.height);
     }];
 }
 
@@ -343,10 +355,15 @@ static void RNAlertViewInit(RNAlertView *self) {
     
     CGFloat height = self.itemSize.height * rowCount;
     CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
+    
     CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
+    if (self.headerView) {
+        frame.size.height += self.headerView.bounds.size.height;
+    }
     self.view.frame = frame;
     
     CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
+    CGFloat headerOffset = self.headerView.bounds.size.height;
     
     for (NSInteger i = 0; i < rowCount; i++) {
         NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
@@ -358,7 +375,7 @@ static void RNAlertViewInit(RNAlertView *self) {
         NSArray *subOptions = [self.optionViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
         CGFloat itemWidth = floorf(width / (CGFloat)rowLength);
         [subOptions enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
-            optionView.frame = CGRectMake(idx * itemWidth, i * itemHeight, itemWidth, itemHeight);
+            optionView.frame = CGRectMake(idx * itemWidth, i * itemHeight + headerOffset, itemWidth, itemHeight);
         }];
     }
 }
@@ -450,6 +467,10 @@ static void RNAlertViewInit(RNAlertView *self) {
     
     self.superviewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(superviewTapGestureHandler:)];
     [self.view.superview addGestureRecognizer:self.superviewTapGesture];
+    
+    if (self.headerView) {
+        [self.view addSubview:self.headerView];
+    }
     
     [self layoutBlurAndOptions];
     

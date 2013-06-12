@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
 // default RNAlertViewStyleGrid
 @property (nonatomic, assign) RNAlertViewStyle alertViewStyle;
 
-// An optional header view
+// An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
 // Show the alert

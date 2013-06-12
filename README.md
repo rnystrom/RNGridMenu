@@ -34,7 +34,7 @@ If you've used this project in a live app, please <a href="mailTo:rnystrom@whois
 - Advanced styles - Item borders, gradients
 - UIAppearance with styles
 - Title view
-- Readme
+- ~~Readme~~
 - Cocoapods
 - ~~More screenshots~~
 
