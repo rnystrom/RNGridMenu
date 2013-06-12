@@ -21,10 +21,10 @@ Cocoapods coming soon!
 Getting started with <code>RNAlertView</code> is dead simple. Just initialize it with a list of options, images, or both, and call the <code>-show</code> method. Like this:
 
 ```objc
-    NSArray *images = //...
-    NSArray *options = //...
-    RNAlertView *av = [[RNAlertView alloc] initWithOptions:options images:images delegate:self];
-    [av show];
+NSArray *images = //...
+NSArray *options = //...
+RNAlertView *av = [[RNAlertView alloc] initWithOptions:options images:images delegate:self];
+[av show];
 ```
 
 There are 3 initialization methods in all for now. Note that the delgate is entirely optional. Just set that parameter to nil (though the control is kind of useless without it, right?).
