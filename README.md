@@ -27,13 +27,13 @@ If you've used this project in a live app, please <a href="mailTo:rnystrom@whois
 
 ## Todo
 
-[ ] Images only
-[ ] Vertical list with icons
-[ ] Vertical list with text only
-[ ] Advanced styles - Item borders, gradients
-[ ] UIAppearance with styles
-[ ] Title text
-[ ] Subtitle text
+- [ ] Images only
+- [ ] Vertical list with icons
+- [ ] Vertical list with text only
+- [ ] Advanced styles - Item borders, gradients
+- [ ] UIAppearance with styles
+- [ ] Title text
+- [ ] Subtitle text
 
 ## Contact
 
