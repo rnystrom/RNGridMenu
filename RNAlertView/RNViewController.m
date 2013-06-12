@@ -39,7 +39,7 @@
 }
 
 - (void)showImagesOnly {
-    NSInteger numberOfOptions = 9;
+    NSInteger numberOfOptions = 5;
     NSArray *images = @[
                         [UIImage imageNamed:@"arrow"],
                         [UIImage imageNamed:@"attachment"],
