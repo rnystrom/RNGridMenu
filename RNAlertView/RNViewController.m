@@ -35,6 +35,47 @@
 }
 
 - (IBAction)onShowButton:(id)sender {
+    [self showList];
+}
+
+- (void)showImagesOnly {
+    NSInteger numberOfOptions = 9;
+    NSArray *images = @[
+                        [UIImage imageNamed:@"arrow"],
+                        [UIImage imageNamed:@"attachment"],
+                        [UIImage imageNamed:@"block"],
+                        [UIImage imageNamed:@"bluetooth"],
+                        [UIImage imageNamed:@"cube"],
+                        [UIImage imageNamed:@"download"],
+                        [UIImage imageNamed:@"enter"],
+                        [UIImage imageNamed:@"file"],
+                        [UIImage imageNamed:@"github"]
+                        ];
+    RNAlertView *av = [[RNAlertView alloc] initWithImages:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+    [av show];
+}
+
+- (void)showList {
+    NSInteger numberOfOptions = 5;
+    NSArray *options = @[
+                         @"Next",
+                         @"Attach",
+                         @"Cancel",
+                         @"Bluetooth",
+                         @"Deliver",
+                         @"Download",
+                         @"Enter",
+                         @"Source Code",
+                         @"Github"
+                         ];
+    RNAlertView *av = [[RNAlertView alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+//    av.itemTextAlignment = NSTextAlignmentLeft;
+    av.itemFont = [UIFont boldSystemFontOfSize:18];
+    av.itemSize = CGSizeMake(150, 55);
+    [av show];
+}
+
+- (void)showGrid {
     NSInteger numberOfOptions = 9;
     NSArray *images = @[
                         [UIImage imageNamed:@"arrow"],
@@ -48,16 +89,16 @@
                         [UIImage imageNamed:@"github"]
                         ];
     NSArray *options = @[
-                          @"Next",
-                          @"Attach",
-                          @"Cancel",
-                          @"Bluetooth",
-                          @"Deliver",
-                          @"Download",
-                          @"Enter",
-                          @"Source Code",
-                          @"Github"
-                          ];
+                         @"Next",
+                         @"Attach",
+                         @"Cancel",
+                         @"Bluetooth",
+                         @"Deliver",
+                         @"Download",
+                         @"Enter",
+                         @"Source Code",
+                         @"Github"
+                         ];
     RNAlertView *av = [[RNAlertView alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
     [av show];
 }

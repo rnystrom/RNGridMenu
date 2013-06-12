@@ -1,9 +1,11 @@
 RNAlertView
 ===========
 
-A grid based alert view with depth.
+A grid based alert view with depth inspired by Mailbox and extended for multiple needs. I created this project out of a stint of boredom. This control is customizable to a degree, but kept simple so you can take it and spin your own subclass or fork out of it.
 
 <p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/rnalertview.gif"/></p>
+
+<p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/options.png"/></p>
 
 ## Installation ##
 
@@ -27,13 +29,14 @@ If you've used this project in a live app, please <a href="mailTo:rnystrom@whois
 
 ## Todo
 
-- Images only
-- Vertical list with icons
-- Vertical list with text only
+- ~~Images only~~
+- ~~Vertical list with text only~~
 - Advanced styles - Item borders, gradients
 - UIAppearance with styles
-- Title text
-- Subtitle text
+- Title view
+- Readme
+- Cocoapods
+- ~~More screenshots~~
 
 ## Contact
 

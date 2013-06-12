@@ -134,7 +134,6 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
         
         self.titleLabel = [[UILabel alloc] init];
         self.titleLabel.backgroundColor = [UIColor clearColor];
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:self.titleLabel];
     }
     return self;
@@ -145,8 +144,39 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
     
     CGRect frame = self.bounds;
     CGFloat inset = floorf(CGRectGetHeight(frame) * 0.1f);
-    self.imageView.frame = CGRectInset(CGRectMake(0, inset / 2, CGRectGetWidth(frame), CGRectGetHeight(frame) * 2/3.f), inset, inset);
-    self.titleLabel.frame = CGRectMake(0, floorf(CGRectGetHeight(frame) * 2/3.f) - inset / 2, CGRectGetWidth(frame), floorf(CGRectGetHeight(frame) / 3.f));
+    
+    BOOL hasImage = self.imageView.image != nil;
+    BOOL hasText = [self.titleLabel.text length] > 0;
+    
+    if (hasImage) {
+        CGFloat y = 0;
+        CGFloat height = CGRectGetHeight(frame);
+        if (hasText) {
+            y = inset / 2;
+            height = floorf(CGRectGetHeight(frame) * 2/3.f);
+        }
+        self.imageView.frame = CGRectInset(CGRectMake(0, y, CGRectGetWidth(frame), height), inset, inset);
+    }
+    else {
+        self.imageView.frame = CGRectZero;
+    }
+    
+    if (hasText) {
+        CGFloat y = 0;
+        CGFloat height = CGRectGetHeight(frame);
+        CGFloat left = 0;
+        if (hasImage) {
+            y = floorf(CGRectGetHeight(frame) * 2/3.f) - inset / 2;
+            height = floorf(CGRectGetHeight(frame) / 3.f);
+        }
+        if (self.titleLabel.textAlignment == NSTextAlignmentLeft) {
+            left = 10;
+        }
+        self.titleLabel.frame = CGRectMake(left, y, CGRectGetWidth(frame), height);
+    }
+    else {
+        self.titleLabel.frame = CGRectZero;
+    }
 }
 
 @end
@@ -158,6 +188,7 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 @property (nonatomic, strong) NSMutableArray *optionViews;
 @property (nonatomic, strong) UIView *blurView;
 @property (nonatomic, strong) UITapGestureRecognizer *superviewTapGesture;
+@property (nonatomic, assign) BOOL viewHasLoaded;
 
 @end
 
@@ -169,9 +200,11 @@ static void RNAlertViewInit(RNAlertView *self) {
     self.itemSize = CGSizeMake(100, 100);
     self.blurLevel = kRNAlertViewDefaultBlur;
     self.animationDuration = kRNAlertViewDefaultDuration;
-    self.titleColor = [UIColor whiteColor];
-    self.titleFont = [UIFont boldSystemFontOfSize:14];
+    self.itemTextColor = [UIColor whiteColor];
+    self.itemFont = [UIFont boldSystemFontOfSize:14];
     self.highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
+    self.alertViewStyle = RNAlertViewStyleGrid;
+    self.itemTextAlignment = NSTextAlignmentCenter;
     
     self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
     self.view.opaque = NO;
@@ -192,6 +225,25 @@ static void RNAlertViewInit(RNAlertView *self) {
 - (id)init {
     if (self = [super init]) {
         RNAlertViewInit(self);
+    }
+    return self;
+}
+
+- (id)initWithOptions:(NSArray *)options delegate:(id <RNAlertViewDelegate>)delegate {
+    if (self = [self init]) {
+        self.alertViewStyle = RNAlertViewStyleList;
+        self.options = options;
+        self.delegate = delegate;
+        [self initializeOptionsAndImages];
+    }
+    return self;
+}
+
+- (id)initWithImages:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate {
+    if (self = [self init]) {
+        self.images = images;
+        self.delegate = delegate;
+        [self initializeOptionsAndImages];
     }
     return self;
 }
@@ -233,17 +285,19 @@ static void RNAlertViewInit(RNAlertView *self) {
 - (void)initializeOptionsAndImages {
     self.optionViews = [NSMutableArray array];
     
-    [self.options enumerateObjectsUsingBlock:^(NSString *option, NSUInteger idx, BOOL *stop) {
-        UIImage *image = self.images[idx];
+    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
+    for (NSInteger i = 0; i < itemCount; i++) {
+        UIImage *image = self.images[i];
+        NSString *option = self.options[i];
+        
         RNAlertOptionView *optionView = [[RNAlertOptionView alloc] init];
         optionView.imageView.image = image;
         optionView.titleLabel.text = option;
-        optionView.titleLabel.textColor = self.titleColor;
-        optionView.titleLabel.font = self.titleFont;
-        optionView.optionIndex = idx;
+        optionView.optionIndex = i;
+        
         [self.view addSubview:optionView];
         [self.optionViews addObject:optionView];
-    }];
+    }
 }
 
 #pragma mark - Layout
@@ -252,21 +306,53 @@ static void RNAlertViewInit(RNAlertView *self) {
     CGRect bounds = self.view.superview.bounds;
     self.blurView.frame = bounds;
     
-    NSInteger rowCount = floorf(sqrtf([self.options count]));
-    NSInteger optionCount = [self.options count];
+    [self styleOptionViews];
+    if (self.alertViewStyle == RNAlertViewStyleGrid) {
+        [self layoutAsGrid];
+    }
+    else if (self.alertViewStyle == RNAlertViewStyleList) {
+        [self layoutAsList];
+    }
+}
+
+- (void)styleOptionViews {
+    [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
+        optionView.titleLabel.textColor = self.itemTextColor;
+        optionView.titleLabel.textAlignment = self.itemTextAlignment;
+        optionView.titleLabel.font = self.itemFont;
+    }];
+}
+
+- (void)layoutAsList {
+    CGRect bounds = self.view.superview.bounds;
+    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
+    CGFloat height = self.itemSize.height * itemCount;
+    CGFloat width = self.itemSize.width;
+    CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
+    self.view.frame = frame;
+    
+    [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
+        optionView.frame = CGRectMake(0, idx * self.itemSize.height, self.itemSize.width, self.itemSize.height);
+    }];
+}
+
+- (void)layoutAsGrid {
+    CGRect bounds = self.view.superview.bounds;
+    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
+    NSInteger rowCount = floorf(sqrtf(itemCount));
     
     CGFloat height = self.itemSize.height * rowCount;
-    CGFloat width = self.itemSize.width * ceilf(optionCount / (CGFloat)rowCount);
+    CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
     CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
     self.view.frame = frame;
     
     CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
     
     for (NSInteger i = 0; i < rowCount; i++) {
-        NSInteger rowLength = ceilf(optionCount / (CGFloat)rowCount);
+        NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
         NSInteger offset = 0;
-        if ((i + 1) * rowLength > optionCount) {
-            rowLength = optionCount - i * rowLength;
+        if ((i + 1) * rowLength > itemCount) {
+            rowLength = itemCount - i * rowLength;
             offset++;
         }
         NSArray *subOptions = [self.optionViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
@@ -316,7 +402,7 @@ static void RNAlertViewInit(RNAlertView *self) {
             if ([self.delegate respondsToSelector:@selector(alertView:willDismissWithButtonIndex:option:)]) {
                 [self.delegate alertView:self willDismissWithButtonIndex:selectedView.optionIndex option:self.options[selectedView.optionIndex]];
             }
-            [UIView animateWithDuration:0.15f
+            [UIView animateWithDuration:0.1f
                                   delay:0
                                 options:UIViewAnimationOptionBeginFromCurrentState
                              animations:^{
