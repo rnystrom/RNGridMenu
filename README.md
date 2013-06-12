@@ -9,19 +9,112 @@ A grid based alert view with depth inspired by Mailbox and extended for multiple
 
 ## Installation ##
 
-TODO
+Drag and drop the <code>RNAlertView</code> .h and .m files into your project. To get this working, you'll need to include the following frameworks:
+
+- QuartCore
+- Accelerate
+
+Cocoapods coming soon!
 
 ## Usage ##
 
-TODO
+Getting started with <code>RNAlertView</code> is dead simple. Just initialize it with a list of options, images, or both, and call the <code>-show</code> method. Like this:
+
+```objc
+    NSArray *images = //...
+    NSArray *options = //...
+    RNAlertView *av = [[RNAlertView alloc] initWithOptions:options images:images delegate:self];
+    [av show];
+```
+
+There are 3 initialization methods in all for now. Note that the delgate is entirely optional. Just set that parameter to nil (though the control is kind of useless without it, right?).
+
+```objc
+// Note this changes the view to style RNAlertViewStyleList since there are no images
+- (id)initWithOptions:(NSArray *)options delegate:(id <RNAlertViewDelegate>)delegate;
+
+- (id)initWithImages:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+
+// The count of both options and images must be equal (caught with assert)
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+```
 
 ## Customization
 
-TODO
+```objc
+@property (nonatomic, copy) UIColor *highlightColor;
+```
+
+The color that items will be highlighted with on selection. Defaults to table view selection blue.
+
+```objc
+@property (nonatomic, strong, readonly) UIColor *backgroundColor;
+```
+
+The background color of the main view (note this is a UIViewController subclass). Default is black with 0.7 alpha.
+
+```objc
+@property (nonatomic, assign) CGSize itemSize;
+```
+
+The size of a list or grid item. Default is 100x100.
+
+```objc
+@property (nonatomic, assign) CGFloat blurLevel;
+```
+
+The level of blur for the background image. Range is 0.0 to 1.0. Default is 0.3.
+
+```objc
+@property (nonatomic, assign) BOOL addsToWindow;
+```
+
+Set to YES if you want to add the control to the window of your app. Default is NO.
+
+```objc
+@property (nonatomic, assign) CGFloat animationDuration;
+```
+
+The time in seconds for the show and dismiss animation. Default is 0.25.
+
+```objc
+@property (nonatomic, copy) UIColor *itemTextColor;
+```
+
+The text color for list items. Default is white.
+
+```objc
+@property (nonatomic, copy) UIFont *itemFont;
+```
+
+The font used for list items. Default is bold size 14.
+
+```objc
+@property (nonatomic, assign) NSTextAlignment itemTextAlignment;
+```
+
+The text alignment of the item titles. Default center alignment.
+
+```objc
+@property (nonatomic, assign) RNAlertViewStyle alertViewStyle;
+```
+
+The list layout. Default <code>RNAlertViewStyleGrid</code>. Options are
+
+```objc
+RNAlertViewStyleGrid
+RNAlertViewStyleList
+```
+
+```objc
+@property (nonatomic, strong) UIView *headerView;
+```
+
+An optional header view. Make sure to set the frame height when setting. Same usage as [UITableView header](http://developer.apple.com/library/ios/#documentation/uikit/reference/UITableView_Class/Reference/Reference.html).
 
 ## Credits
 
-TODO
+I finally got a solid implementation on responding to orientation changes by looking at the source of [<code>MBAlertView</code>](https://github.com/mobitar/MBAlertView). Great project if you haven't seen it.
 
 ## Apps
 

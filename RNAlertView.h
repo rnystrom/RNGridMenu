@@ -21,8 +21,13 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
 
 @interface RNAlertView : UIViewController
 
+// A list of NSStrings
 @property (nonatomic, strong, readonly) NSArray *options;
+
+// A list of UIImages
 @property (nonatomic, strong, readonly) NSArray *images;
+
+// An optional delegate to receive information about what items were selected
 @property (nonatomic, weak) id <RNAlertViewDelegate> delegate;
 
 // Initialize the alert with a list of strings. Note this changes the view to style RNAlertViewStyleList since there are no images
