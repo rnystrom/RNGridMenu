@@ -35,7 +35,7 @@
 }
 
 - (IBAction)onShowButton:(id)sender {
-    NSInteger numberOfOptions = 4;
+    NSInteger numberOfOptions = 9;
     NSArray *images = @[
                         [UIImage imageNamed:@"arrow"],
                         [UIImage imageNamed:@"attachment"],
