@@ -20,10 +20,8 @@
 		861940691767A8480052C089 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861940671767A8480052C089 /* MainStoryboard_iPad.storyboard */; };
 		8619406C1767A8480052C089 /* RNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8619406B1767A8480052C089 /* RNViewController.m */; };
 		861940741767A8B20052C089 /* RNAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 861940731767A8B20052C089 /* RNAlertView.m */; };
-		861940771767AA740052C089 /* UIImage+Blur.m in Sources */ = {isa = PBXBuildFile; fileRef = 861940761767AA740052C089 /* UIImage+Blur.m */; };
 		861940791767AA8E0052C089 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861940781767AA8E0052C089 /* QuartzCore.framework */; };
 		8619407B1767AA920052C089 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619407A1767AA920052C089 /* Accelerate.framework */; };
-		8619407E1767AD5E0052C089 /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 8619407D1767AD5E0052C089 /* UIView+Screenshot.m */; };
 		861940801767C3130052C089 /* Profile_256.png in Resources */ = {isa = PBXBuildFile; fileRef = 8619407F1767C3130052C089 /* Profile_256.png */; };
 		8619408B1767CBB80052C089 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940821767CBB80052C089 /* arrow.png */; };
 		8619408C1767CBB80052C089 /* attachment.png in Resources */ = {isa = PBXBuildFile; fileRef = 861940831767CBB80052C089 /* attachment.png */; };
@@ -56,12 +54,8 @@
 		8619406B1767A8480052C089 /* RNViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNViewController.m; sourceTree = "<group>"; };
 		861940721767A8B20052C089 /* RNAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNAlertView.h; sourceTree = "<group>"; };
 		861940731767A8B20052C089 /* RNAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNAlertView.m; sourceTree = "<group>"; };
-		861940751767AA740052C089 /* UIImage+Blur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Blur.h"; path = "RNAlertView/UIImage+Blur.h"; sourceTree = "<group>"; };
-		861940761767AA740052C089 /* UIImage+Blur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Blur.m"; path = "RNAlertView/UIImage+Blur.m"; sourceTree = "<group>"; };
 		861940781767AA8E0052C089 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8619407A1767AA920052C089 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		8619407C1767AD5E0052C089 /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+Screenshot.h"; path = "RNAlertView/UIView+Screenshot.h"; sourceTree = "<group>"; };
-		8619407D1767AD5E0052C089 /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+Screenshot.m"; path = "RNAlertView/UIView+Screenshot.m"; sourceTree = "<group>"; };
 		8619407F1767C3130052C089 /* Profile_256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Profile_256.png; sourceTree = "<group>"; };
 		861940821767CBB80052C089 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		861940831767CBB80052C089 /* attachment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attachment.png; sourceTree = "<group>"; };
@@ -93,10 +87,6 @@
 		861940401767A8480052C089 = {
 			isa = PBXGroup;
 			children = (
-				8619407C1767AD5E0052C089 /* UIView+Screenshot.h */,
-				8619407D1767AD5E0052C089 /* UIView+Screenshot.m */,
-				861940751767AA740052C089 /* UIImage+Blur.h */,
-				861940761767AA740052C089 /* UIImage+Blur.m */,
 				861940721767A8B20052C089 /* RNAlertView.h */,
 				861940731767A8B20052C089 /* RNAlertView.m */,
 				861940521767A8480052C089 /* RNAlertView */,
@@ -253,8 +243,6 @@
 				8619405D1767A8480052C089 /* RNAppDelegate.m in Sources */,
 				8619406C1767A8480052C089 /* RNViewController.m in Sources */,
 				861940741767A8B20052C089 /* RNAlertView.m in Sources */,
-				861940771767AA740052C089 /* UIImage+Blur.m in Sources */,
-				8619407E1767AD5E0052C089 /* UIView+Screenshot.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +377,7 @@
 				861940711767A8480052C089 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
