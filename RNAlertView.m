@@ -497,7 +497,7 @@ static void RNAlertViewInit(RNAlertView *self) {
     alertScaleAnimation.keyTimes = @[
                                      @(0.0f),
                                      @(0.5f),
-                                     @(0.9f),
+                                     @(0.85f),
                                      @(1.0f)
                                      ];
     
