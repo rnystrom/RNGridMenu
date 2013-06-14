@@ -9,9 +9,9 @@
 #import "RNGridMenu.h"
 #import <QuartzCore/QuartzCore.h>
 
-CGFloat const kRNAlertViewDefaultDuration = 0.25f;
-CGFloat const kRNAlertViewDefaultBlur = 0.3f;
-CGFloat const kRNAlertViewDefaultWidth = 280;
+CGFloat const kRNGridMenuDefaultDuration = 0.25f;
+CGFloat const kRNGridMenuDefaultBlur = 0.3f;
+CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @implementation UIView (Screenshot)
 
@@ -115,13 +115,13 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 
 @end
 
-@interface RNAlertOptionView : UIView
+@interface RNMenuOptionView : UIView
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) NSInteger optionIndex;
 @end
 
-@implementation RNAlertOptionView
+@implementation RNMenuOptionView
 
 - (id)init {
     if (self = [super init]) {
@@ -192,18 +192,18 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 
 @end
 
-static RNGridMenu *displayedAlertView;
+static RNGridMenu *displayedGridMenu;
 
 @implementation RNGridMenu
 
-static void RNAlertViewInit(RNGridMenu *self) {
+static void RNGridMenuInit(RNGridMenu *self) {
     self.itemSize = CGSizeMake(100, 100);
-    self.blurLevel = kRNAlertViewDefaultBlur;
-    self.animationDuration = kRNAlertViewDefaultDuration;
+    self.blurLevel = kRNGridMenuDefaultBlur;
+    self.animationDuration = kRNGridMenuDefaultDuration;
     self.itemTextColor = [UIColor whiteColor];
     self.itemFont = [UIFont boldSystemFontOfSize:14];
     self.highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
-    self.alertViewStyle = RNAlertViewStyleGrid;
+    self.menuStyle = RNGridMenuStyleDefault;
     self.itemTextAlignment = NSTextAlignmentCenter;
     
     self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
@@ -224,14 +224,14 @@ static void RNAlertViewInit(RNGridMenu *self) {
 
 - (id)init {
     if (self = [super init]) {
-        RNAlertViewInit(self);
+        RNGridMenuInit(self);
     }
     return self;
 }
 
 - (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate {
     if (self = [self init]) {
-        self.alertViewStyle = RNAlertViewStyleList;
+        self.menuStyle = RNGridMenuStyleList;
         self.options = options;
         self.delegate = delegate;
         [self initializeOptionsAndImages];
@@ -249,7 +249,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
 }
 
 - (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
-    if (options || images) NSAssert([options count] == [images count], @"Alert view must have the same number of option strings and images.");
+    if (options || images) NSAssert([options count] == [images count], @"Grid menu must have the same number of option strings and images.");
     if (self = [self init]) {
         self.options = options;
         self.images = images;
@@ -290,7 +290,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
         UIImage *image = self.images[i];
         NSString *option = self.options[i];
         
-        RNAlertOptionView *optionView = [[RNAlertOptionView alloc] init];
+        RNMenuOptionView *optionView = [[RNMenuOptionView alloc] init];
         optionView.imageView.image = image;
         optionView.titleLabel.text = option;
         optionView.optionIndex = i;
@@ -303,7 +303,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
 #pragma mark - Layout
 
 - (void)styleOptionViews {
-    [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
+    [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.titleLabel.textColor = self.itemTextColor;
         optionView.titleLabel.textAlignment = self.itemTextAlignment;
         optionView.titleLabel.font = self.itemFont;
@@ -316,10 +316,10 @@ static void RNAlertViewInit(RNGridMenu *self) {
     
     [self styleOptionViews];
     
-    if (self.alertViewStyle == RNAlertViewStyleGrid) {
+    if (self.menuStyle == RNGridMenuStyleDefault) {
         [self layoutAsGrid];
     }
-    else if (self.alertViewStyle == RNAlertViewStyleList) {
+    else if (self.menuStyle == RNGridMenuStyleList) {
         [self layoutAsList];
     }
     
@@ -343,7 +343,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
     
     CGFloat headerOffset = self.headerView.bounds.size.height;
     
-    [self.optionViews enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
+    [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.frame = CGRectMake(0, idx * self.itemSize.height + headerOffset, self.itemSize.width, self.itemSize.height);
     }];
 }
@@ -374,7 +374,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
         }
         NSArray *subOptions = [self.optionViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
         CGFloat itemWidth = floorf(width / (CGFloat)rowLength);
-        [subOptions enumerateObjectsUsingBlock:^(RNAlertOptionView *optionView, NSUInteger idx, BOOL *stop) {
+        [subOptions enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
             optionView.frame = CGRectMake(idx * itemWidth, i * itemHeight + headerOffset, itemWidth, itemHeight);
         }];
     }
@@ -404,11 +404,11 @@ static void RNAlertViewInit(RNGridMenu *self) {
 
 - (void)superviewTapGestureHandler:(UITapGestureRecognizer *)recognizer {
     if (recognizer == self.superviewTapGesture) {
-        RNAlertOptionView *selectedView = nil;
+        RNMenuOptionView *selectedView = nil;
         CGPoint point = [recognizer locationInView:self.view.superview];
         if (CGRectContainsPoint(self.view.frame, point)) {
             CGPoint localPoint = [recognizer locationInView:self.view];
-            for (RNAlertOptionView *optionView in self.optionViews) {
+            for (RNMenuOptionView *optionView in self.optionViews) {
                 if (CGRectContainsPoint(optionView.frame, localPoint)) {
                     selectedView = optionView;
                     break;
@@ -416,8 +416,8 @@ static void RNAlertViewInit(RNGridMenu *self) {
             }
         }
         if (selectedView) {
-            if ([self.delegate respondsToSelector:@selector(alertView:willDismissWithButtonIndex:option:)]) {
-                [self.delegate alertView:self willDismissWithButtonIndex:selectedView.optionIndex option:self.options[selectedView.optionIndex]];
+            if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option::)]) {
+                [self.delegate gridMenu:self willDismissWithButtonIndex:selectedView.optionIndex option:self.options[selectedView.optionIndex]];
             }
             [UIView animateWithDuration:0.1f
                                   delay:0
@@ -442,7 +442,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
 }
 
 - (void)showAfterScreenshotDelay {
-    displayedAlertView = self;
+    displayedGridMenu = self;
     
     UIWindow * window = [UIApplication sharedApplication].keyWindow;
     if (!window)
@@ -480,43 +480,43 @@ static void RNAlertViewInit(RNGridMenu *self) {
     opacityAnimation.duration = self.animationDuration * 0.5f;
     [self.blurView.layer addAnimation:opacityAnimation forKey:@"opacityAnimation"];
     
-    CAKeyframeAnimation *alertScaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
     
     CATransform3D startingScale = CATransform3DScale(self.view.layer.transform, 0, 0, 0);
     CATransform3D overshootScale = CATransform3DScale(self.view.layer.transform, 1.1, 1.1, 1.0);
     CATransform3D undershootScale = CATransform3DScale(self.view.layer.transform, 0.95, 0.95, 1.0);
     CATransform3D endingScale = self.view.layer.transform;
     
-    alertScaleAnimation.values = @[
+    scaleAnimation.values = @[
                                    [NSValue valueWithCATransform3D:startingScale],
                                    [NSValue valueWithCATransform3D:overshootScale],
                                    [NSValue valueWithCATransform3D:undershootScale],
                                    [NSValue valueWithCATransform3D:endingScale]
                                    ];
     
-    alertScaleAnimation.keyTimes = @[
+    scaleAnimation.keyTimes = @[
                                      @(0.0f),
                                      @(0.5f),
                                      @(0.85f),
                                      @(1.0f)
                                      ];
     
-    alertScaleAnimation.timingFunctions = @[
+    scaleAnimation.timingFunctions = @[
                                             [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut],
                                             [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
                                             [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]
                                             ];
-    alertScaleAnimation.fillMode = kCAFillModeForwards;
-    alertScaleAnimation.removedOnCompletion = NO;
+    scaleAnimation.fillMode = kCAFillModeForwards;
+    scaleAnimation.removedOnCompletion = NO;
     
-    CAAnimationGroup *alertAnimation = [CAAnimationGroup animation];
-    alertAnimation.animations = @[
-                                  alertScaleAnimation,
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+    animationGroup.animations = @[
+                                  scaleAnimation,
                                   opacityAnimation
                                   ];
-    alertAnimation.duration = self.animationDuration;
+    animationGroup.duration = self.animationDuration;
     
-    [self.view.layer addAnimation:alertAnimation forKey:@"alertAnimation"];
+    [self.view.layer addAnimation:animationGroup forKey:nil];
 }
 
 - (void)dismiss {
@@ -533,7 +533,7 @@ static void RNAlertViewInit(RNGridMenu *self) {
                          [self.view.superview removeGestureRecognizer:self.superviewTapGesture];
                          [self.view removeFromSuperview];
                          [self.blurView removeFromSuperview];
-                         displayedAlertView = nil;
+                         displayedGridMenu = nil;
                      }];
 }
 

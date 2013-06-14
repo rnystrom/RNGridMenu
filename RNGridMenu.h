@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
-    RNAlertViewStyleGrid,
-    RNAlertViewStyleList
+typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
+    RNGridMenuStyleDefault,
+    RNGridMenuStyleList
 };
 
 @class RNGridMenu;
 @protocol RNGridMenuDelegate <NSObject>
 @optional
-- (void)alertView:(RNGridMenu *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
 @end
 
 @interface RNGridMenu : UIViewController
@@ -30,13 +30,13 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
 // An optional delegate to receive information about what items were selected
 @property (nonatomic, weak) id <RNGridMenuDelegate> delegate;
 
-// Initialize the alert with a list of strings. Note this changes the view to style RNAlertViewStyleList since there are no images
+// Initialize the menu with a list of strings. Note this changes the view to style RNGridMenuStyleList since there are no images
 - (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate;
 
-// Initialize the alert with a list of images. Maintains style RNAlertViewStyleGrid
+// Initialize the menu with a list of images. Maintains style RNGridMenuStyleDefault
 - (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 
-// Initialize the alert with images and options. The count of both params must be equal (caught with assert)
+// Initialize the menu with images and options. The count of both params must be equal (caught with assert)
 - (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 
 // The color that items will be highlighted with on selection.
@@ -75,18 +75,18 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
 @property (nonatomic, assign) NSTextAlignment itemTextAlignment;
 
 // The list layout
-// default RNAlertViewStyleGrid
-@property (nonatomic, assign) RNAlertViewStyle alertViewStyle;
+// default RNGridMenuStyleDefault
+@property (nonatomic, assign) RNGridMenuStyle menuStyle;
 
 // An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
-// Show the alert
+// Show the menu
 - (void)show;
 
-// Dismiss the alert
+// Dismiss the menu
 // This is called when the window is tapped. If tapped inside the view an item will be selected.
-// If tapped outside the view, the alert is simply dismissed.
+// If tapped outside the view, the menu is simply dismissed.
 - (void)dismiss;
 
 @end

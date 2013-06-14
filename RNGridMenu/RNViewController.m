@@ -22,7 +22,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)alertView:(RNGridMenu *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option {
+- (void)gridMenu:(RNGridMenu *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option {
     NSLog(@"selected index %i with option %@",buttonIndex,option);
 }
 

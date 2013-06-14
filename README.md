@@ -1,7 +1,7 @@
 RNGridMenu
 ===========
 
-A grid based alert view with depth inspired by Mailbox and extended for multiple needs. I created this project out of a stint of boredom. This control is customizable to a degree, but kept simple so you can take it and spin your own subclass or fork out of it.
+A grid based menu view with field depth and bounce animation: inspired by Mailbox, and extended for multiple needs. I created this project out of a stint of boredom. This control is customizable to a degree, but kept simple so you can take it and spin your own subclass or fork out of it.
 
 <p align="center"><img src="https://raw.github.com/rnystrom/RNGridMenu/master/images/menu.gif"/></p>
 
@@ -96,13 +96,13 @@ The font used for list items. Default is bold size 14.
 The text alignment of the item titles. Default center alignment.
 
 ```objc
-@property (nonatomic, assign) RNGridMenuStyle alertViewStyle;
+@property (nonatomic, assign) RNGridMenuStyle menuStyle;
 ```
 
 The list layout. Default <code>RNGridMenuStyleGrid</code>. Options are
 
 ```objc
-RNGridMenuStyleGrid
+RNGridMenuStyleDefault
 RNGridMenuStyleList
 ```
 
