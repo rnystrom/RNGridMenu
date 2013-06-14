@@ -1,6 +1,6 @@
 //
-//  RNAlertView.h
-//  RNAlertView
+//  RNGridMenu.h
+//  RNGridMenu
 //
 //  Created by Ryan Nystrom on 6/11/13.
 //  Copyright (c) 2013 Ryan Nystrom. All rights reserved.
@@ -13,13 +13,13 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
     RNAlertViewStyleList
 };
 
-@class RNAlertView;
-@protocol RNAlertViewDelegate <NSObject>
+@class RNGridMenu;
+@protocol RNGridMenuDelegate <NSObject>
 @optional
-- (void)alertView:(RNAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
+- (void)alertView:(RNGridMenu *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
 @end
 
-@interface RNAlertView : UIViewController
+@interface RNGridMenu : UIViewController
 
 // A list of NSStrings
 @property (nonatomic, strong, readonly) NSArray *options;
@@ -28,16 +28,16 @@ typedef NS_ENUM(NSInteger, RNAlertViewStyle) {
 @property (nonatomic, strong, readonly) NSArray *images;
 
 // An optional delegate to receive information about what items were selected
-@property (nonatomic, weak) id <RNAlertViewDelegate> delegate;
+@property (nonatomic, weak) id <RNGridMenuDelegate> delegate;
 
 // Initialize the alert with a list of strings. Note this changes the view to style RNAlertViewStyleList since there are no images
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNAlertViewDelegate>)delegate;
+- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate;
 
 // Initialize the alert with a list of images. Maintains style RNAlertViewStyleGrid
-- (id)initWithImages:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 
 // Initialize the alert with images and options. The count of both params must be equal (caught with assert)
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 
 // The color that items will be highlighted with on selection.
 // default table view selection blue

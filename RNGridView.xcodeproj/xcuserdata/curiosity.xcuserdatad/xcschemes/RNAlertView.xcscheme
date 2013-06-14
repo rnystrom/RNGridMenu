@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "861940481767A8480052C089"
-               BuildableName = "RNAlertView.app"
-               BlueprintName = "RNAlertView"
-               ReferencedContainer = "container:RNAlertView.xcodeproj">
+               BuildableName = "RNGridView.app"
+               BlueprintName = "RNGridView"
+               ReferencedContainer = "container:RNGridView.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
-            BuildableName = "RNAlertView.app"
-            BlueprintName = "RNAlertView"
-            ReferencedContainer = "container:RNAlertView.xcodeproj">
+            BuildableName = "RNGridView.app"
+            BlueprintName = "RNGridView"
+            ReferencedContainer = "container:RNGridView.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
-            BuildableName = "RNAlertView.app"
-            BlueprintName = "RNAlertView"
-            ReferencedContainer = "container:RNAlertView.xcodeproj">
+            BuildableName = "RNGridView.app"
+            BlueprintName = "RNGridView"
+            ReferencedContainer = "container:RNGridView.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
-            BuildableName = "RNAlertView.app"
-            BlueprintName = "RNAlertView"
-            ReferencedContainer = "container:RNAlertView.xcodeproj">
+            BuildableName = "RNGridView.app"
+            BlueprintName = "RNGridView"
+            ReferencedContainer = "container:RNGridView.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -1,12 +1,12 @@
 //
-//  RNAlertView.m
-//  RNAlertView
+//  RNGridMenu.m
+//  RNGridMenu
 //
 //  Created by Ryan Nystrom on 6/11/13.
 //  Copyright (c) 2013 Ryan Nystrom. All rights reserved.
 //
 
-#import "RNAlertView.h"
+#import "RNGridMenu.h"
 #import <QuartzCore/QuartzCore.h>
 
 CGFloat const kRNAlertViewDefaultDuration = 0.25f;
@@ -181,7 +181,7 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 
 @end
 
-@interface RNAlertView()
+@interface RNGridMenu()
 
 @property (nonatomic, strong, readwrite) NSArray *options;
 @property (nonatomic, strong, readwrite) NSArray *images;
@@ -192,11 +192,11 @@ CGFloat const kRNAlertViewDefaultWidth = 280;
 
 @end
 
-static RNAlertView *displayedAlertView;
+static RNGridMenu *displayedAlertView;
 
-@implementation RNAlertView
+@implementation RNGridMenu
 
-static void RNAlertViewInit(RNAlertView *self) {
+static void RNAlertViewInit(RNGridMenu *self) {
     self.itemSize = CGSizeMake(100, 100);
     self.blurLevel = kRNAlertViewDefaultBlur;
     self.animationDuration = kRNAlertViewDefaultDuration;
@@ -229,7 +229,7 @@ static void RNAlertViewInit(RNAlertView *self) {
     return self;
 }
 
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNAlertViewDelegate>)delegate {
+- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate {
     if (self = [self init]) {
         self.alertViewStyle = RNAlertViewStyleList;
         self.options = options;
@@ -239,7 +239,7 @@ static void RNAlertViewInit(RNAlertView *self) {
     return self;
 }
 
-- (id)initWithImages:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate {
+- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
     if (self = [self init]) {
         self.images = images;
         self.delegate = delegate;
@@ -248,7 +248,7 @@ static void RNAlertViewInit(RNAlertView *self) {
     return self;
 }
 
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate {
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
     if (options || images) NSAssert([options count] == [images count], @"Alert view must have the same number of option strings and images.");
     if (self = [self init]) {
         self.options = options;

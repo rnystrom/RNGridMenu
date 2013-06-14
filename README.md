@@ -1,15 +1,15 @@
-RNAlertView
+RNGridMenu
 ===========
 
 A grid based alert view with depth inspired by Mailbox and extended for multiple needs. I created this project out of a stint of boredom. This control is customizable to a degree, but kept simple so you can take it and spin your own subclass or fork out of it.
 
-<p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/rnalertview.gif"/></p>
+<p align="center"><img src="https://raw.github.com/rnystrom/RNGridMenu/master/images/menu.gif"/></p>
 
-<p align="center"><img src="https://raw.github.com/rnystrom/RNAlertView/master/images/options.jpg"/></p>
+<p align="center"><img src="https://raw.github.com/rnystrom/RNGridMenu/master/images/options.jpg"/></p>
 
 ## Installation ##
 
-Drag and drop the <code>RNAlertView</code> .h and .m files into your project. To get this working, you'll need to include the following frameworks:
+Drag and drop the <code>RNGridMenu</code> .h and .m files into your project. To get this working, you'll need to include the following frameworks:
 
 - QuartCore
 - Accelerate
@@ -18,25 +18,25 @@ Cocoapods coming soon!
 
 ## Usage ##
 
-Getting started with <code>RNAlertView</code> is dead simple. Just initialize it with a list of options, images, or both, and call the <code>-show</code> method. Like this:
+Getting started with <code>RNGridMenu</code> is dead simple. Just initialize it with a list of options, images, or both, and call the <code>-show</code> method. Like this:
 
 ```objc
 NSArray *images = //...
 NSArray *options = //...
-RNAlertView *av = [[RNAlertView alloc] initWithOptions:options images:images delegate:self];
+RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:options images:images delegate:self];
 [av show];
 ```
 
 There are 3 initialization methods in all for now. Note that the delgate is entirely optional. Just set that parameter to nil (though the control is kind of useless without it, right?).
 
 ```objc
-// Note this changes the view to style RNAlertViewStyleList since there are no images
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNAlertViewDelegate>)delegate;
+// Note this changes the view to style RNGridMenuStyleList since there are no images
+- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate;
 
-- (id)initWithImages:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 
 // The count of both options and images must be equal (caught with assert)
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNAlertViewDelegate>)delegate;
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
 ```
 
 ## Customization
@@ -96,14 +96,14 @@ The font used for list items. Default is bold size 14.
 The text alignment of the item titles. Default center alignment.
 
 ```objc
-@property (nonatomic, assign) RNAlertViewStyle alertViewStyle;
+@property (nonatomic, assign) RNGridMenuStyle alertViewStyle;
 ```
 
-The list layout. Default <code>RNAlertViewStyleGrid</code>. Options are
+The list layout. Default <code>RNGridMenuStyleGrid</code>. Options are
 
 ```objc
-RNAlertViewStyleGrid
-RNAlertViewStyleList
+RNGridMenuStyleGrid
+RNGridMenuStyleList
 ```
 
 ```objc
@@ -141,4 +141,4 @@ If you've used this project in a live app, please <a href="mailTo:rnystrom@whois
 
 ## License
 
-See [LICENSE](https://github.com/rnystrom/RNAlertView/blob/master/LICENSE).
+See [LICENSE](https://github.com/rnystrom/RNGridMenu/blob/master/LICENSE).
