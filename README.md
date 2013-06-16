@@ -118,6 +118,10 @@ I finally got a solid implementation on responding to orientation changes by loo
 
 Sample icons provided by [IcoMoon](http://icomoon.io/).
 
+I followed [Peter Steinberger](http://petersteinberger.com/)'s [post](http://petersteinberger.com/blog/2013/uiappearance-for-custom-views/) on setting up [UIAppearance](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIAppearance_Protocol/).
+
+The blurring algorithm was initially used from [this post](http://indieambitions.com/idevblogaday/perform-blur-vimage-accelerate-framework-tutorial/) but then perfected by [Club15CC](https://github.com/Club15CC) in a [pull request](https://github.com/rnystrom/RNBlurModalView/pull/11) for <code>[RNBlurModalView](https://github.com/rnystrom/RNBlurModalView)</code>.
+
 ## Apps
 
 If you've used this project in a live app, please <a href="mailTo:rnystrom@whoisryannystrom.com">let me know</a>! Nothing makes me happier than seeing someone else take my work and go wild with it.
@@ -128,7 +132,7 @@ If you've used this project in a live app, please <a href="mailTo:rnystrom@whois
 - ~~Vertical list with text only~~
 - Advanced styles - Item borders, gradients
 - UIAppearance with styles
-- Title view
+- ~~Title view~~
 - ~~Readme~~
 - Cocoapods
 - ~~More screenshots~~

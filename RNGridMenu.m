@@ -43,18 +43,13 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     boxSize = boxSize - (boxSize % 2) + 1;
     
     CGImageRef img = self.CGImage;
-    
     vImage_Buffer inBuffer, outBuffer;
-    
     vImage_Error error;
-    
     void *pixelBuffer;
-    
     
     //create vImage_Buffer with data from CGImageRef
     CGDataProviderRef inProvider = CGImageGetDataProvider(img);
     CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
-    
     
     inBuffer.width = CGImageGetWidth(img);
     inBuffer.height = CGImageGetHeight(img);
@@ -416,7 +411,7 @@ static void RNGridMenuInit(RNGridMenu *self) {
             }
         }
         if (selectedView) {
-            if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option::)]) {
+            if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option:)]) {
                 [self.delegate gridMenu:self willDismissWithButtonIndex:selectedView.optionIndex option:self.options[selectedView.optionIndex]];
             }
             [UIView animateWithDuration:0.1f
@@ -466,7 +461,7 @@ static void RNGridMenuInit(RNGridMenu *self) {
     [self.blurView addSubview:self.view];
     
     self.superviewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(superviewTapGestureHandler:)];
-    [self.view.superview addGestureRecognizer:self.superviewTapGesture];
+    [self.view.superview performSelector:@selector(addGestureRecognizer:) withObject:self.superviewTapGesture afterDelay:self.animationDuration];
     
     if (self.headerView) {
         [self.view addSubview:self.headerView];
@@ -478,7 +473,7 @@ static void RNGridMenuInit(RNGridMenu *self) {
     opacityAnimation.fromValue = @(0);
     opacityAnimation.toValue = @(1);
     opacityAnimation.duration = self.animationDuration * 0.5f;
-    [self.blurView.layer addAnimation:opacityAnimation forKey:@"opacityAnimation"];
+    [self.blurView.layer addAnimation:opacityAnimation forKey:nil];
     
     CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
     
@@ -520,21 +515,39 @@ static void RNGridMenuInit(RNGridMenu *self) {
 }
 
 - (void)dismiss {
+    CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    opacityAnimation.fromValue = @(1);
+    opacityAnimation.toValue = @(0);
+    opacityAnimation.duration = self.animationDuration;
+    [self.blurView.layer addAnimation:opacityAnimation forKey:nil];
+    
     CATransform3D transform = CATransform3DScale(self.view.layer.transform, 0, 0, 0);
-    [UIView animateWithDuration:self.animationDuration
-                          delay:0
-                        options:UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{
-                         self.blurView.alpha = 0;
-                         self.view.alpha = 0;
-                         self.view.layer.transform = transform;
-                     }
-                     completion:^(BOOL finished){
-                         [self.view.superview removeGestureRecognizer:self.superviewTapGesture];
-                         [self.view removeFromSuperview];
-                         [self.blurView removeFromSuperview];
-                         displayedGridMenu = nil;
-                     }];
+    
+    CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    scaleAnimation.fromValue = [NSValue valueWithCATransform3D:self.view.layer.transform];
+    scaleAnimation.toValue = [NSValue valueWithCATransform3D:transform];
+    scaleAnimation.duration = self.animationDuration;
+
+    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+    animationGroup.animations = @[
+                                  opacityAnimation,
+                                  scaleAnimation
+                                  ];
+    animationGroup.duration = self.animationDuration;
+    animationGroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [self.view.layer addAnimation:animationGroup forKey:nil];
+    
+    self.blurView.layer.opacity = 0;
+    self.view.layer.transform = transform;
+    
+    [self performSelector:@selector(cleanupGridMenu) withObject:nil afterDelay:self.animationDuration];
+}
+
+- (void)cleanupGridMenu {
+    [self.view.superview removeGestureRecognizer:self.superviewTapGesture];
+    [self.view removeFromSuperview];
+    [self.blurView removeFromSuperview];
+    displayedGridMenu = nil;
 }
 
 @end
