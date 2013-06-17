@@ -8,38 +8,39 @@
 
 #import <UIKit/UIKit.h>
 
+
 typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
     RNGridMenuStyleGrid,
     RNGridMenuStyleList
 };
 
+
 @class RNGridMenu;
+
+@interface RNGridMenuItem : NSObject
+
+@property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, readonly) NSString *title;
+
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title;
+- (instancetype)initWithImage:(UIImage *)image;
+- (instancetype)initWithTitle:(NSString *)title;
+
+@end
 
 @protocol RNGridMenuDelegate <NSObject>
 @optional
-- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissItem:(RNGridMenuItem *)item withIndex:(NSInteger)itemIndex;
 @end
 
 
 @interface RNGridMenu : UIViewController
 
-// A list of NSStrings
-@property (nonatomic, strong, readonly) NSArray *options;
-
-// A list of UIImages
-@property (nonatomic, strong, readonly) NSArray *images;
+// the menu items. Instances of RNGridMenuItem
+@property (nonatomic, readonly) NSArray *items;
 
 // An optional delegate to receive information about what items were selected
 @property (nonatomic, weak) id<RNGridMenuDelegate> delegate;
-
-// Initialize the menu with a list of strings. Note this changes the view to style RNGridMenuStyleList since there are no images
-- (id)initWithOptions:(NSArray *)options;
-
-// Initialize the menu with a list of images. Maintains style RNGridMenuStyleGrid
-- (id)initWithImages:(NSArray *)images;
-
-// Initialize the menu with images and options. The count of both params must be equal (caught with assert)
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images;
 
 // The color that items will be highlighted with on selection.
 // default table view selection blue
@@ -80,6 +81,15 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
+
+// Initialize the menu with a list of menu items.
+// Note: this changes the view to style RNGridMenuStyleList if no images are supplied
+- (id)initWithItems:(NSArray *)items;
+// Initialize the menu with a list of images. Maintains style RNGridMenuStyleGrid
+- (id)initWithImages:(NSArray *)images;
+// Initialize the menu with a list of titles. Note: this changes the view to style RNGridMenuStyleList since no images are supplied
+- (id)initWithTitles:(NSArray *)titles;
+
 // Show the menu
 - (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center;
 
@@ -89,3 +99,4 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 - (void)dismiss;
 
 @end
+

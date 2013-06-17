@@ -7,9 +7,13 @@
 
 @implementation RNViewController
 
-- (void)viewDidLoad
-{
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UIViewController
+////////////////////////////////////////////////////////////////////////
+
+- (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.imageView.layer.borderWidth = 2;
     self.imageView.layer.borderColor = [UIColor whiteColor].CGColor;
     self.imageView.layer.cornerRadius = CGRectGetHeight(self.imageView.bounds) / 2;
@@ -21,15 +25,35 @@
     [self.view addGestureRecognizer:longPress];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Target/Action
+////////////////////////////////////////////////////////////////////////
 
 - (IBAction)onShowButton:(id)sender {
-    [self showGrid];
+    [self showList];
 }
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+        [self showGridWithHeaderFromPoint:[longPress locationInView:self.view]];
+        longPress.enabled = NO;
+        longPress.enabled = YES;
+    }
+
+    NSLog(@"%d", longPress.state);
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - RNGridMenuDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissItem:(RNGridMenuItem *)item withIndex:(NSInteger)itemIndex {
+    NSLog(@"Dismissed with item %d: %@", itemIndex, item.title);
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Private
+////////////////////////////////////////////////////////////////////////
 
 - (void)showImagesOnly {
     NSInteger numberOfOptions = 5;
@@ -62,7 +86,7 @@
                          @"Source Code",
                          @"Github"
                          ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    RNGridMenu *av = [[RNGridMenu alloc] initWithTitles:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
 //    av.itemTextAlignment = NSTextAlignmentLeft;
     av.itemFont = [UIFont boldSystemFontOfSize:18];
@@ -72,59 +96,38 @@
 
 - (void)showGrid {
     NSInteger numberOfOptions = 9;
-    NSArray *images = @[
-                        [UIImage imageNamed:@"arrow"],
-                        [UIImage imageNamed:@"attachment"],
-                        [UIImage imageNamed:@"block"],
-                        [UIImage imageNamed:@"bluetooth"],
-                        [UIImage imageNamed:@"cube"],
-                        [UIImage imageNamed:@"download"],
-                        [UIImage imageNamed:@"enter"],
-                        [UIImage imageNamed:@"file"],
-                        [UIImage imageNamed:@"github"]
+    NSArray *items = @[
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] title:@"Next"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"attachment"] title:@"Attach"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"block"] title:@"Cancel"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"bluetooth"] title:@"Bluetooth"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"cube"] title:@"Deliver"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"download"] title:@"Download"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"enter"] title:@"Enter"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"file"] title:@"Source Code"],
+                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"github"] title:@"Github"]
                         ];
-    NSArray *options = @[
-                         @"Next",
-                         @"Attach",
-                         @"Cancel",
-                         @"Bluetooth",
-                         @"Deliver",
-                         @"Download",
-                         @"Enter",
-                         @"Source Code",
-                         @"Github"
-                         ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+
+    RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
     [av showInViewController:self center:self.view.center];
 }
 
 - (void)showGridWithHeaderFromPoint:(CGPoint)point {
     NSInteger numberOfOptions = 9;
-    NSArray *images = @[
-                        [UIImage imageNamed:@"arrow"],
-                        [UIImage imageNamed:@"attachment"],
-                        [UIImage imageNamed:@"block"],
-                        [UIImage imageNamed:@"bluetooth"],
-                        [UIImage imageNamed:@"cube"],
-                        [UIImage imageNamed:@"download"],
-                        [UIImage imageNamed:@"enter"],
-                        [UIImage imageNamed:@"file"],
-                        [UIImage imageNamed:@"github"]
-                        ];
-    NSArray *options = @[
-                         @"Next",
-                         @"Attach",
-                         @"Cancel",
-                         @"Bluetooth",
-                         @"Deliver",
-                         @"Download",
-                         @"Enter",
-                         @"Source Code",
-                         @"Github"
-                         ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)]
-                                                  images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    NSArray *items = @[
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] title:@"Next"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"attachment"] title:@"Attach"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"block"] title:@"Cancel"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"bluetooth"] title:@"Bluetooth"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"cube"] title:@"Deliver"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"download"] title:@"Download"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"enter"] title:@"Enter"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"file"] title:@"Source Code"],
+                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"github"] title:@"Github"]
+                       ];
+
+    RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
     
     UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 44)];
@@ -136,16 +139,6 @@
     av.headerView = header;
     
     [av showInViewController:self center:point];
-}
-
-- (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
-    if (longPress.state == UIGestureRecognizerStateBegan) {
-        [self showGridWithHeaderFromPoint:[longPress locationInView:self.view]];
-        longPress.enabled = NO;
-        longPress.enabled = YES;
-    }
-
-    NSLog(@"%d", longPress.state); 
 }
 
 @end

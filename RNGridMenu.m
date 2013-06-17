@@ -16,9 +16,13 @@ CGFloat const kRNGridMenuDefaultBlur = 0.3f;
 CGFloat const kRNGridMenuDefaultWidth = 280;
 
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Categories
+////////////////////////////////////////////////////////////////////////
+
 @implementation UIView (Screenshot)
 
-- (UIImage*)screenshot {
+- (UIImage *)rn_screenshot {
     UIGraphicsBeginImageContext(self.bounds.size);
     [self.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -37,7 +41,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @implementation UIImage (Blur)
 
--(UIImage *)boxblurImageWithBlur:(CGFloat)blur {
+-(UIImage *)rn_boxblurImageWithBlur:(CGFloat)blur {
     if (blur < 0.f || blur > 1.f) {
         blur = 0.5f;
     }
@@ -111,8 +115,11 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - RNMenuItemView
+////////////////////////////////////////////////////////////////////////
 
-@interface RNMenuOptionView : UIView
+@interface RNMenuItemView : UIView
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -121,20 +128,20 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 @end
 
 
-@implementation RNMenuOptionView
+@implementation RNMenuItemView
 
 - (id)init {
     if (self = [super init]) {
         self.backgroundColor = [UIColor clearColor];
 
-        self.imageView = [[UIImageView alloc] init];
-        self.imageView.backgroundColor = [UIColor clearColor];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self addSubview:self.imageView];
+        _imageView = [[UIImageView alloc] init];
+        _imageView.backgroundColor = [UIColor clearColor];
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self addSubview:_imageView];
 
-        self.titleLabel = [[UILabel alloc] init];
-        self.titleLabel.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.titleLabel];
+        _titleLabel = [[UILabel alloc] init];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        [self addSubview:_titleLabel];
     }
     return self;
 }
@@ -181,14 +188,40 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - RNGridMenuItem
+////////////////////////////////////////////////////////////////////////
 
-@interface RNGridMenu()
+@implementation RNGridMenuItem
 
-@property (nonatomic, strong, readwrite) NSArray *options;
-@property (nonatomic, strong, readwrite) NSArray *images;
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title {
+    if ((self = [super init])) {
+        _image = image;
+        _title = [title copy];
+    }
+
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image {
+    return [self initWithImage:image title:nil];
+}
+
+- (instancetype)initWithTitle:(NSString *)title {
+    return [self initWithImage:nil title:title];
+}
+
+@end
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - RNGridMenu
+////////////////////////////////////////////////////////////////////////
+
+@interface RNGridMenu ()
+
 @property (nonatomic, assign) CGPoint menuCenter;
-@property (nonatomic, strong) NSMutableArray *optionViews;
-@property (nonatomic, strong) RNMenuOptionView *selectedOptionView;
+@property (nonatomic, strong) NSMutableArray *itemViews;
+@property (nonatomic, strong) RNMenuItemView *selectedOptionView;
 @property (nonatomic, strong) UIView *blurView;
 @property (nonatomic, strong) UIView *menuView;
 
@@ -200,8 +233,8 @@ static RNGridMenu *displayedGridMenu;
 
 #pragma mark - Lifecycle
 
-- (id)init {
-    if (self = [super init]) {
+- (id)initWithItems:(NSArray *)items {
+    if ((self = [super init])) {
         _itemSize = CGSizeMake(100, 100);
         _blurLevel = kRNGridMenuDefaultBlur;
         _animationDuration = kRNGridMenuDefaultDuration;
@@ -211,39 +244,37 @@ static RNGridMenu *displayedGridMenu;
         _menuStyle = RNGridMenuStyleGrid;
         _itemTextAlignment = NSTextAlignmentCenter;
         _menuView = [UIView new];
-    }
-    return self;
-}
 
-- (id)initWithOptions:(NSArray *)options {
-    if (self = [self init]) {
-        _menuStyle = RNGridMenuStyleList;
-        _options = [options copy];
-        
-        [self initializeOptionsAndImages];
+        BOOL hasImages = [items filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNGridMenuItem *item, NSDictionary *bindings) {
+            return item.image != nil;
+        }]].count > 0;
+        _menuStyle = hasImages ? RNGridMenuStyleGrid : RNGridMenuStyleList;
+        _items = [items copy];
+
+        [self setupItemViews];
     }
+
     return self;
 }
 
 - (id)initWithImages:(NSArray *)images {
-    if (self = [self init]) {
-        _images = [images copy];
-        
-        [self initializeOptionsAndImages];
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:images.count];
+    for (UIImage *image in images) {
+        RNGridMenuItem *item = [[RNGridMenuItem alloc] initWithImage:image];
+        [items addObject:item];
     }
-    return self;
+    
+    return [self initWithItems:items];
 }
 
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images {
-    NSAssert([options count] == [images count], @"Grid menu must have the same number of option strings and images.");
-
-    if (self = [self init]) {
-        _options = [options copy];
-        _images = [images copy];
-
-        [self initializeOptionsAndImages];
+- (id)initWithTitles:(NSArray *)titles {
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:titles.count];
+    for (NSString *title in titles) {
+        RNGridMenuItem *item = [[RNGridMenuItem alloc] initWithTitle:title];
+        [items addObject:item];
     }
-    return self;
+
+    return [self initWithItems:items];
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -256,7 +287,7 @@ static RNGridMenu *displayedGridMenu;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     CGPoint point = [[touches anyObject] locationInView:self.view];
-    RNMenuOptionView *selectedOptionView = [self optionViewAtPoint:point];
+    RNMenuItemView *selectedOptionView = [self optionViewAtPoint:point];
 
     [self highlightOptionView:selectedOptionView];
     self.selectedOptionView = selectedOptionView;
@@ -264,7 +295,7 @@ static RNGridMenu *displayedGridMenu;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     CGPoint point = [[touches anyObject] locationInView:self.view];
-    RNMenuOptionView *newSelectedOptionView = [self optionViewAtPoint:point];
+    RNMenuItemView *newSelectedOptionView = [self optionViewAtPoint:point];
 
     [self highlightOptionView:newSelectedOptionView];
     self.selectedOptionView = newSelectedOptionView;
@@ -272,10 +303,10 @@ static RNGridMenu *displayedGridMenu;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.selectedOptionView != nil) {
-        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option:)]) {
+        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissItem:withIndex:)]) {
             [self.delegate gridMenu:self
-         willDismissWithButtonIndex:self.selectedOptionView.optionIndex
-                             option:self.options[self.selectedOptionView.optionIndex]];
+                    willDismissItem:self.items[self.selectedOptionView.optionIndex]
+                          withIndex:self.selectedOptionView.optionIndex];
         }
     }
 
@@ -349,28 +380,24 @@ static RNGridMenu *displayedGridMenu;
 
 #pragma mark - Actions
 
-- (void)initializeOptionsAndImages {
-    self.optionViews = [NSMutableArray array];
+- (void)setupItemViews {
+    self.itemViews = [NSMutableArray array];
 
-    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
-    for (NSInteger i = 0; i < itemCount; i++) {
-        UIImage *image = self.images[i];
-        NSString *option = self.options[i];
-
-        RNMenuOptionView *optionView = [[RNMenuOptionView alloc] init];
-        optionView.imageView.image = image;
-        optionView.titleLabel.text = option;
-        optionView.optionIndex = i;
+    [self.items enumerateObjectsUsingBlock:^(RNGridMenuItem *item, NSUInteger idx, BOOL *stop) {
+        RNMenuItemView *optionView = [[RNMenuItemView alloc] init];
+        optionView.imageView.image = item.image;
+        optionView.titleLabel.text = item.title;
+        optionView.optionIndex = idx;
 
         [self.menuView addSubview:optionView];
-        [self.optionViews addObject:optionView];
-    }
+        [self.itemViews addObject:optionView];
+    }];
 }
 
 #pragma mark - Layout
 
 - (void)styleOptionViews {
-    [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
+    [self.itemViews enumerateObjectsUsingBlock:^(RNMenuItemView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.titleLabel.textColor = self.itemTextColor;
         optionView.titleLabel.textAlignment = self.itemTextAlignment;
         optionView.titleLabel.font = self.itemFont;
@@ -378,20 +405,19 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)layoutAsList {
-    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     CGFloat width = self.itemSize.width;
-    CGFloat height = self.itemSize.height * itemCount;
+    CGFloat height = self.itemSize.height * self.items.count;
     CGFloat headerOffset = CGRectGetHeight(self.headerView.bounds);
 
     self.menuView.frame = [self menuFrameWithWidth:width height:height center:self.menuCenter headerOffset:headerOffset];
 
-    [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
+    [self.itemViews enumerateObjectsUsingBlock:^(RNMenuItemView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.frame = CGRectMake(0, idx * self.itemSize.height + headerOffset, self.itemSize.width, self.itemSize.height);
     }];
 }
 
 - (void)layoutAsGrid {
-    NSInteger itemCount = self.options ? [self.options count] : [self.images count];
+    NSInteger itemCount = self.items.count;
     NSInteger rowCount = floorf(sqrtf(itemCount));
 
     CGFloat height = self.itemSize.height * rowCount;
@@ -408,9 +434,9 @@ static RNGridMenu *displayedGridMenu;
             rowLength = itemCount - i * rowLength;
             offset++;
         }
-        NSArray *subOptions = [self.optionViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
+        NSArray *subOptions = [self.itemViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
         CGFloat itemWidth = floorf(width / (CGFloat)rowLength);
-        [subOptions enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
+        [subOptions enumerateObjectsUsingBlock:^(RNMenuItemView *optionView, NSUInteger idx, BOOL *stop) {
             optionView.frame = CGRectMake(idx * itemWidth, i * itemHeight + headerOffset, itemWidth, itemHeight);
         }];
     }
@@ -419,10 +445,10 @@ static RNGridMenu *displayedGridMenu;
 - (void)createScreenshotAndLayout {
     self.menuView.alpha = 0;
     self.blurView.alpha = 0;
-    UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
+    UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view rn_screenshot];
     self.menuView.alpha = 1;
     self.blurView.alpha = 1;
-    UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
+    UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
     self.blurView.layer.contents = (id) blur.CGImage;
 
     [self.view setNeedsLayout];
@@ -448,8 +474,8 @@ static RNGridMenu *displayedGridMenu;
 - (void)showAfterScreenshotDelay {
     displayedGridMenu = self;
 
-    UIImage *screenshot = [self.parentViewController.view screenshot];
-    UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
+    UIImage *screenshot = [self.parentViewController.view rn_screenshot];
+    UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
 
     self.blurView = [[UIView alloc] initWithFrame:self.parentViewController.view.bounds];
     self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -570,12 +596,12 @@ static RNGridMenu *displayedGridMenu;
 }
 
 
-- (RNMenuOptionView *)optionViewAtPoint:(CGPoint)point {
-    RNMenuOptionView *selectedView = nil;
+- (RNMenuItemView *)optionViewAtPoint:(CGPoint)point {
+    RNMenuItemView *selectedView = nil;
 
     if (CGRectContainsPoint(self.menuView.frame, point)) {
         point =  [self.view convertPoint:point toView:self.menuView];
-        selectedView = [[self.optionViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNMenuOptionView *optionView, NSDictionary *bindings) {
+        selectedView = [[self.itemViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNMenuItemView *optionView, NSDictionary *bindings) {
             return CGRectContainsPoint(optionView.frame, point);
         }]] lastObject];
     }
@@ -619,10 +645,10 @@ static RNGridMenu *displayedGridMenu;
                 offsetY = -tempOffset;
             }
         }
-        
+
         frame = CGRectOffset(frame, offsetX, offsetY);
     }
-    
+
     return CGRectIntegral(frame);
 }
 
