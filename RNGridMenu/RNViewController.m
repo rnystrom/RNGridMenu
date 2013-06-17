@@ -1,8 +1,11 @@
 #import "RNViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface RNViewController ()
+
+@interface RNViewController () <RNLongPressGestureRecognizerDelegate>
+
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
 @end
 
 @implementation RNViewController
@@ -19,9 +22,7 @@
     self.imageView.layer.cornerRadius = CGRectGetHeight(self.imageView.bounds) / 2;
     self.imageView.clipsToBounds = YES;
 
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    longPress.cancelsTouchesInView = NO;
-    longPress.delaysTouchesBegan = NO;
+    RNLongPressGestureRecognizer *longPress = [[RNLongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [self.view addGestureRecognizer:longPress];
 }
 
@@ -36,11 +37,7 @@
 - (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
     if (longPress.state == UIGestureRecognizerStateBegan) {
         [self showGridWithHeaderFromPoint:[longPress locationInView:self.view]];
-        longPress.enabled = NO;
-        longPress.enabled = YES;
     }
-
-    NSLog(@"%d", longPress.state);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -70,7 +67,7 @@
                         ];
     RNGridMenu *av = [[RNGridMenu alloc] initWithImages:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
-    [av showInViewController:self center:self.view.center];
+    [av showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 
 - (void)showList {
@@ -91,7 +88,7 @@
 //    av.itemTextAlignment = NSTextAlignmentLeft;
     av.itemFont = [UIFont boldSystemFontOfSize:18];
     av.itemSize = CGSizeMake(150, 55);
-    [av showInViewController:self center:self.view.center];
+    [av showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 
 - (void)showGrid {
@@ -110,7 +107,7 @@
 
     RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
-    [av showInViewController:self center:self.view.center];
+    [av showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 
 - (void)showGridWithHeaderFromPoint:(CGPoint)point {

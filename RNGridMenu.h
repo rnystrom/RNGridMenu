@@ -40,6 +40,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 @interface RNGridMenu : UIViewController
 
++ (instancetype)visibleGridMenu;
+
 // the menu items. Instances of RNGridMenuItem
 @property (nonatomic, readonly) NSArray *items;
 
@@ -103,4 +105,19 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 - (void)dismiss;
 
 @end
+
+
+@interface RNLongPressGestureRecognizer : UILongPressGestureRecognizer
+
+@end
+
+@protocol RNLongPressGestureRecognizerDelegate <UIGestureRecognizerDelegate>
+
+- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress beganTouches:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress movedTouches:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress endedTouches:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress cancelledTouches:(NSSet *)touches withEvent:(UIEvent *)event;
+
+@end
+
 

@@ -254,11 +254,15 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
-static RNGridMenu *displayedGridMenu;
+static RNGridMenu *rn_visibleGridMenu;
 
 @implementation RNGridMenu
 
 #pragma mark - Lifecycle
+
++ (instancetype)visibleGridMenu {
+    return rn_visibleGridMenu;
+}
 
 - (instancetype)initWithItems:(NSArray *)items {
     if ((self = [super init])) {
@@ -488,8 +492,8 @@ static RNGridMenu *displayedGridMenu;
 - (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center {
     NSParameterAssert(parentViewController != nil);
 
-    if (displayedGridMenu != nil) {
-        [displayedGridMenu dismiss];
+    if (rn_visibleGridMenu != nil) {
+        [rn_visibleGridMenu dismiss];
     }
 
     [self rn_addToParentViewController:parentViewController callingAppearanceMethods:YES];
@@ -500,7 +504,7 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)showAfterScreenshotDelay {
-    displayedGridMenu = self;
+    rn_visibleGridMenu = self;
 
     UIImage *screenshot = [self.parentViewController.view rn_screenshot];
     UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
@@ -590,7 +594,7 @@ static RNGridMenu *displayedGridMenu;
     self.blurView.layer.opacity = 0;
     self.menuView.layer.transform = transform;
 
-    displayedGridMenu = nil;
+    rn_visibleGridMenu = nil;
     self.selectedItemView = nil;
     [self performSelector:@selector(cleanupGridMenu) withObject:nil afterDelay:self.animationDuration];
 }
@@ -690,3 +694,49 @@ static RNGridMenu *displayedGridMenu;
 }
 
 @end
+
+#import <UIKit/UIGestureRecognizerSubclass.h>
+
+
+@implementation RNLongPressGestureRecognizer {
+    BOOL _touchesDidMove;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+
+    RNGridMenu *menu = [RNGridMenu visibleGridMenu];
+    //[menu touchesBegan:touches withEvent:event];
+
+    _touchesDidMove = NO;
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesMoved:touches withEvent:event];
+
+    RNGridMenu *menu = [RNGridMenu visibleGridMenu];
+    [menu touchesMoved:touches withEvent:event];
+
+    _touchesDidMove = YES;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesEnded:touches withEvent:event];
+
+    if (_touchesDidMove) {
+        RNGridMenu *menu = [RNGridMenu visibleGridMenu];
+        [menu touchesEnded:touches withEvent:event];
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    [super touchesCancelled:touches withEvent:event];
+
+    if (_touchesDidMove) {
+        RNGridMenu *menu = [RNGridMenu visibleGridMenu];
+        [menu touchesCancelled:touches withEvent:event];
+    }
+}
+
+@end
+
