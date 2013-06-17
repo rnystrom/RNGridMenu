@@ -262,12 +262,12 @@ static RNGridMenu *displayedGridMenu;
 
 - (instancetype)initWithItems:(NSArray *)items {
     if ((self = [super init])) {
-        _itemSize = CGSizeMake(100, 100);
+        _itemSize = CGSizeMake(100.f, 100.f);
         _blurLevel = kRNGridMenuDefaultBlur;
         _animationDuration = kRNGridMenuDefaultDuration;
         _itemTextColor = [UIColor whiteColor];
-        _itemFont = [UIFont boldSystemFontOfSize:14];
-        _highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
+        _itemFont = [UIFont boldSystemFontOfSize:14.f];
+        _highlightColor = [UIColor colorWithRed:.02f green:.549f blue:.961f alpha:1.f];
         _menuStyle = RNGridMenuStyleGrid;
         _itemTextAlignment = NSTextAlignmentCenter;
         _menuView = [UIView new];
@@ -302,6 +302,11 @@ static RNGridMenu *displayedGridMenu;
     }
 
     return [self initWithItems:items];
+}
+
+- (id)init {
+    NSAssert(NO, @"Unable to create with plain init.");
+    return nil;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -350,8 +355,7 @@ static RNGridMenu *displayedGridMenu;
     self.menuView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
     self.menuView.opaque = NO;
     self.menuView.clipsToBounds = YES;
-    self.menuView.layer.cornerRadius = 8;
-    self.menuView.autoresizingMask = UIViewAutoresizingNone;
+    self.menuView.layer.cornerRadius = 8.f;
 
     CGFloat m34 = 1 / 300.f;
     CATransform3D transform = CATransform3DIdentity;
@@ -467,13 +471,13 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)createScreenshotAndLayout {
-    self.menuView.alpha = 0;
-    self.blurView.alpha = 0;
+    self.menuView.alpha = 0.f;
+    self.blurView.alpha = 0.f;
     UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view rn_screenshot];
-    self.menuView.alpha = 1;
-    self.blurView.alpha = 1;
+    self.menuView.alpha = 1.f;
+    self.blurView.alpha = 1.f;
     UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
-    self.blurView.layer.contents = (id) blur.CGImage;
+    self.blurView.layer.contents = (id)blur.CGImage;
 
     [self.view setNeedsLayout];
     [self.view layoutIfNeeded];
@@ -644,6 +648,8 @@ static RNGridMenu *displayedGridMenu;
     if (![item isEmpty]) {
         selectedItemView.backgroundColor = self.highlightColor;
         self.selectedItemView = selectedItemView;
+    } else {
+        self.selectedItemView = nil;
     }
 }
 
