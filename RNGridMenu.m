@@ -182,7 +182,6 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 @property (nonatomic, strong) NSMutableArray *optionViews;
 @property (nonatomic, strong) UIView *blurView;
 @property (nonatomic, strong) UITapGestureRecognizer *superviewTapGesture;
-@property (nonatomic, assign) BOOL viewHasLoaded;
 
 @end
 
@@ -255,11 +254,6 @@ static void RNGridMenuInit(RNGridMenu *self) {
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.viewHasLoaded = YES;
 }
 
 - (BOOL)shouldAutorotate {
@@ -389,7 +383,7 @@ static void RNGridMenuInit(RNGridMenu *self) {
 #pragma mark - Notifications
 
 - (void)didChangeOrientationNotification:(NSNotification *)notification {
-    if (self.viewHasLoaded && self.view.superview) {
+    if ([self isViewLoaded] && self.view.superview) {
         [self performSelector:@selector(createScreenshotAndLayout) withObject:nil afterDelay:0.01];
     }
 }

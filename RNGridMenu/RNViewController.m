@@ -14,6 +14,9 @@
     self.imageView.layer.borderColor = [UIColor whiteColor].CGColor;
     self.imageView.layer.cornerRadius = CGRectGetHeight(self.imageView.bounds) / 2;
     self.imageView.clipsToBounds = YES;
+
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    [self.view addGestureRecognizer:longPress];
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,6 +133,12 @@
     av.headerView = header;
     
     [av show];
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
+    if (longPress.state == UIGestureRecognizerStateBegan) {
+        [self showGridWithHeader];
+    }
 }
 
 @end
