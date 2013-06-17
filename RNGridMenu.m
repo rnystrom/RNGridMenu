@@ -99,10 +99,9 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     //clean up
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
-    
     free(pixelBuffer);
+    free(pixelBuffer2);
     CFRelease(inBitmapData);
-    
     CGImageRelease(imageRef);
     
     return returnImage;
