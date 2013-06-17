@@ -98,7 +98,7 @@
     [av showInViewController:self center:self.view.center];
 }
 
-- (void)showGridWithHeader {
+- (void)showGridWithHeaderFromPoint:(CGPoint)point {
     NSInteger numberOfOptions = 9;
     NSArray *images = @[
                         [UIImage imageNamed:@"arrow"],
@@ -132,12 +132,12 @@
     header.textAlignment = NSTextAlignmentCenter;
     av.headerView = header;
     
-    [av showInViewController:self center:self.view.center];
+    [av showInViewController:self center:point];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
     if (longPress.state == UIGestureRecognizerStateBegan) {
-        [self showGridWithHeader];
+        [self showGridWithHeaderFromPoint:[longPress locationInView:self.view]];
     }
 }
 

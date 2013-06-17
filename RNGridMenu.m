@@ -186,6 +186,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @property (nonatomic, strong, readwrite) NSArray *options;
 @property (nonatomic, strong, readwrite) NSArray *images;
+@property (nonatomic, assign) CGPoint menuCenter;
 @property (nonatomic, strong) NSMutableArray *optionViews;
 @property (nonatomic, strong) RNMenuOptionView *selectedOptionView;
 @property (nonatomic, strong) UIView *blurView;
@@ -396,7 +397,6 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)layoutAsGrid {
-    CGRect bounds = self.menuView.superview.bounds;
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     NSInteger rowCount = floorf(sqrtf(itemCount));
 
@@ -404,11 +404,12 @@ static RNGridMenu *displayedGridMenu;
     CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
     CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
 
-    CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
+    CGRect menuBounds = CGRectMake(0.f, 0.f, width, height);
     CGFloat headerOffset = self.headerView.bounds.size.height;
 
-    frame.size.height += headerOffset;
-    self.menuView.frame = frame;
+    menuBounds.size.height += headerOffset;
+    self.menuView.bounds = menuBounds;
+    self.menuView.center = self.menuCenter;
 
     for (NSInteger i = 0; i < rowCount; i++) {
         NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
@@ -441,7 +442,14 @@ static RNGridMenu *displayedGridMenu;
 #pragma mark - Animations
 
 - (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center {
+    NSParameterAssert(parentViewController != nil);
+
+    if (displayedGridMenu != nil) {
+        [displayedGridMenu dismiss];
+    }
+    
     [self rn_addToParentViewController:parentViewController callingAppearanceMethods:YES];
+    self.menuCenter = center;
     self.view.frame = parentViewController.view.bounds;
     [self performSelector:@selector(showAfterScreenshotDelay) withObject:nil afterDelay:0.05];
 }
