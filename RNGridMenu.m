@@ -705,9 +705,6 @@ static RNGridMenu *rn_visibleGridMenu;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
 
-    RNGridMenu *menu = [RNGridMenu visibleGridMenu];
-    //[menu touchesBegan:touches withEvent:event];
-
     _touchesDidMove = NO;
 }
 
