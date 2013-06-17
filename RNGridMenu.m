@@ -8,10 +8,13 @@
 
 #import "RNGridMenu.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Accelerate/Accelerate.h>
+
 
 CGFloat const kRNGridMenuDefaultDuration = 0.25f;
 CGFloat const kRNGridMenuDefaultBlur = 0.3f;
 CGFloat const kRNGridMenuDefaultWidth = 280;
+
 
 @implementation UIView (Screenshot)
 
@@ -31,7 +34,6 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
-#import <Accelerate/Accelerate.h>
 
 @implementation UIImage (Blur)
 
@@ -109,11 +111,15 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
+
 @interface RNMenuOptionView : UIView
+
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) NSInteger optionIndex;
+
 @end
+
 
 @implementation RNMenuOptionView
 
@@ -175,6 +181,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 @end
 
+
 @interface RNGridMenu()
 
 @property (nonatomic, strong, readwrite) NSArray *options;
@@ -189,35 +196,23 @@ static RNGridMenu *displayedGridMenu;
 
 @implementation RNGridMenu
 
-static void RNGridMenuInit(RNGridMenu *self) {
-    self.itemSize = CGSizeMake(100, 100);
-    self.blurLevel = kRNGridMenuDefaultBlur;
-    self.animationDuration = kRNGridMenuDefaultDuration;
-    self.itemTextColor = [UIColor whiteColor];
-    self.itemFont = [UIFont boldSystemFontOfSize:14];
-    self.highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
-    self.menuStyle = RNGridMenuStyleDefault;
-    self.itemTextAlignment = NSTextAlignmentCenter;
-    
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
-    self.view.opaque = NO;
-    self.view.clipsToBounds = YES;
-    self.view.layer.cornerRadius = 8;
-    self.view.autoresizingMask = UIViewAutoresizingNone;
-    
-    CGFloat m34 = 1 / 300.f;
-    CATransform3D transform = CATransform3DIdentity;
-    transform.m34 = m34;
-    self.view.layer.transform = transform;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeOrientationNotification:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
-}
-
-#pragma mark - View Controller
+#pragma mark - Lifecycle
 
 - (id)init {
     if (self = [super init]) {
-        RNGridMenuInit(self);
+        _itemSize = CGSizeMake(100, 100);
+        _blurLevel = kRNGridMenuDefaultBlur;
+        _animationDuration = kRNGridMenuDefaultDuration;
+        _itemTextColor = [UIColor whiteColor];
+        _itemFont = [UIFont boldSystemFontOfSize:14];
+        _highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
+        _menuStyle = RNGridMenuStyleDefault;
+        _itemTextAlignment = NSTextAlignmentCenter;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didChangeOrientationNotification:)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -254,6 +249,23 @@ static void RNGridMenuInit(RNGridMenu *self) {
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    self.view.opaque = NO;
+    self.view.clipsToBounds = YES;
+    self.view.layer.cornerRadius = 8;
+    self.view.autoresizingMask = UIViewAutoresizingNone;
+
+    CGFloat m34 = 1 / 300.f;
+    CATransform3D transform = CATransform3DIdentity;
+    transform.m34 = m34;
+    self.view.layer.transform = transform;
 }
 
 - (BOOL)shouldAutorotate {
