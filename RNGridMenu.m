@@ -339,21 +339,23 @@ static RNGridMenu *rn_visibleGridMenu;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    id<RNGridMenuDelegate> delegate = self.delegate;
+
     if (self.selectedItemView != nil) {
         RNGridMenuItem *item = self.items[self.selectedItemView.itemIndex];
         
-        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithSelectedItem:atIndex:)]) {
-            [self.delegate gridMenu:self
-        willDismissWithSelectedItem:item
-                            atIndex:self.selectedItemView.itemIndex];
+        if ([delegate respondsToSelector:@selector(gridMenu:willDismissWithSelectedItem:atIndex:)]) {
+            [delegate gridMenu:self
+   willDismissWithSelectedItem:item
+                       atIndex:self.selectedItemView.itemIndex];
         }
 
         if (item.action != nil) {
             item.action();
         }
     } else {
-        if ([self.delegate respondsToSelector:@selector(gridMenuWillDismiss:)]) {
-            [self.delegate gridMenuWillDismiss:self];
+        if ([delegate respondsToSelector:@selector(gridMenuWillDismiss:)]) {
+            [delegate gridMenuWillDismiss:self];
         }
     }
 
@@ -584,6 +586,10 @@ static RNGridMenu *rn_visibleGridMenu;
 }
 
 - (void)dismiss {
+    if (self.dismissAction != nil) {
+        self.dismissAction();
+    }
+
     CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     opacityAnimation.fromValue = @1.;
     opacityAnimation.toValue = @0.;
