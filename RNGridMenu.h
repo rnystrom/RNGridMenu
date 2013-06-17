@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 // The color that items will be highlighted with on selection.
 // default table view selection blue
-@property (nonatomic, copy) UIColor *highlightColor;
+@property (nonatomic, strong) UIColor *highlightColor;
 
 // The background color of the main view (note this is a UIViewController subclass)
 // default black with 0.7 alpha
@@ -64,11 +64,11 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 // The text color for list items
 // default white
-@property (nonatomic, copy) UIColor *itemTextColor;
+@property (nonatomic, strong) UIColor *itemTextColor;
 
 // The font used for list items
 // default bold size 14
-@property (nonatomic, copy) UIFont *itemFont;
+@property (nonatomic, strong) UIFont *itemFont;
 
 // The text alignment of the item titles
 // default center
