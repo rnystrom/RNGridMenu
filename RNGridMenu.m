@@ -378,18 +378,12 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)layoutAsList {
-    CGRect bounds = self.menuView.superview.bounds;
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
-    CGFloat height = self.itemSize.height * itemCount;
     CGFloat width = self.itemSize.width;
+    CGFloat height = self.itemSize.height * itemCount;
+    CGFloat headerOffset = CGRectGetHeight(self.headerView.bounds);
 
-    CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
-    if (self.headerView) {
-        frame.size.height += self.headerView.bounds.size.height;
-    }
-    self.menuView.frame = frame;
-
-    CGFloat headerOffset = self.headerView.bounds.size.height;
+    self.menuView.frame = [self menuFrameWithWidth:width height:height center:self.menuCenter headerOffset:headerOffset];
 
     [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.frame = CGRectMake(0, idx * self.itemSize.height + headerOffset, self.itemSize.width, self.itemSize.height);
@@ -403,13 +397,9 @@ static RNGridMenu *displayedGridMenu;
     CGFloat height = self.itemSize.height * rowCount;
     CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
     CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
-
-    CGRect menuBounds = CGRectMake(0.f, 0.f, width, height);
     CGFloat headerOffset = self.headerView.bounds.size.height;
 
-    menuBounds.size.height += headerOffset;
-    self.menuView.bounds = menuBounds;
-    self.menuView.center = self.menuCenter;
+    self.menuView.frame = [self menuFrameWithWidth:width height:height center:self.menuCenter headerOffset:headerOffset];
 
     for (NSInteger i = 0; i < rowCount; i++) {
         NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
@@ -447,20 +437,21 @@ static RNGridMenu *displayedGridMenu;
     if (displayedGridMenu != nil) {
         [displayedGridMenu dismiss];
     }
-    
+
     [self rn_addToParentViewController:parentViewController callingAppearanceMethods:YES];
     self.menuCenter = center;
     self.view.frame = parentViewController.view.bounds;
-    [self performSelector:@selector(showAfterScreenshotDelay) withObject:nil afterDelay:0.05];
+
+    [self showAfterScreenshotDelay];
 }
 
 - (void)showAfterScreenshotDelay {
     displayedGridMenu = self;
 
-    UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
+    UIImage *screenshot = [self.parentViewController.view screenshot];
     UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
 
-    self.blurView = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].keyWindow.rootViewController.view.bounds];
+    self.blurView = [[UIView alloc] initWithFrame:self.parentViewController.view.bounds];
     self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.blurView.layer.contents = (id)blur.CGImage;
     [self.view addSubview:self.blurView];
@@ -516,6 +507,7 @@ static RNGridMenu *displayedGridMenu;
     animationGroup.duration = self.animationDuration;
 
     [self.menuView.layer addAnimation:animationGroup forKey:nil];
+    [self becomeFirstResponder];
 }
 
 - (void)dismiss {
@@ -544,13 +536,13 @@ static RNGridMenu *displayedGridMenu;
     self.blurView.layer.opacity = 0;
     self.menuView.layer.transform = transform;
 
+    displayedGridMenu = nil;
+    self.selectedOptionView = nil;
     [self performSelector:@selector(cleanupGridMenu) withObject:nil afterDelay:self.animationDuration];
 }
 
 - (void)cleanupGridMenu {
     [self rn_removeFromParentViewControllerCallingAppearanceMethods:YES];
-    self.selectedOptionView = nil;
-    displayedGridMenu = nil;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -596,6 +588,42 @@ static RNGridMenu *displayedGridMenu;
         self.selectedOptionView.backgroundColor = [UIColor clearColor];
         optionView.backgroundColor = self.highlightColor;
     }
+}
+
+- (CGRect)menuFrameWithWidth:(CGFloat)width height:(CGFloat)height center:(CGPoint)center headerOffset:(CGFloat)headerOffset {
+    height += headerOffset;
+
+    CGRect frame = CGRectMake(center.x - width/2.f, center.y - height/2.f, width, height);
+
+    CGFloat offsetX = 0.f;
+    CGFloat offsetY = 0.f;
+
+    // make sure frame doesn't exceed views bounds
+    {
+        CGFloat tempOffset = CGRectGetMinX(frame) - CGRectGetMinX(self.view.bounds);
+        if (tempOffset < 0.f) {
+            offsetX = -tempOffset;
+        } else {
+            tempOffset = CGRectGetMaxX(frame) - CGRectGetMaxX(self.view.bounds);
+            if (tempOffset > 0.f) {
+                offsetX = -tempOffset;
+            }
+        }
+
+        tempOffset = CGRectGetMinY(frame) - CGRectGetMinY(self.view.bounds);
+        if (tempOffset < 0.f) {
+            offsetY = -tempOffset;
+        } else {
+            tempOffset = CGRectGetMaxY(frame) - CGRectGetMaxY(self.view.bounds);
+            if (tempOffset > 0.f) {
+                offsetY = -tempOffset;
+            }
+        }
+        
+        frame = CGRectOffset(frame, offsetX, offsetY);
+    }
+    
+    return CGRectIntegral(frame);
 }
 
 @end

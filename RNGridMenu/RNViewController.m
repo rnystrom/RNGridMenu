@@ -16,6 +16,8 @@
     self.imageView.clipsToBounds = YES;
 
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    longPress.cancelsTouchesInView = NO;
+    longPress.delaysTouchesBegan = NO;
     [self.view addGestureRecognizer:longPress];
 }
 
@@ -23,10 +25,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)gridMenu:(RNGridMenu *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option {
-    NSLog(@"selected index %i with option %@",buttonIndex,option);
 }
 
 - (IBAction)onShowButton:(id)sender {
@@ -138,7 +136,11 @@
 - (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
     if (longPress.state == UIGestureRecognizerStateBegan) {
         [self showGridWithHeaderFromPoint:[longPress locationInView:self.view]];
+        longPress.enabled = NO;
+        longPress.enabled = YES;
     }
+
+    NSLog(@"%d", longPress.state); 
 }
 
 @end
