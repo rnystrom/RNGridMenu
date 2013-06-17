@@ -237,7 +237,8 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
-    if (options || images) NSAssert([options count] == [images count], @"Grid menu must have the same number of option strings and images.");
+    NSAssert([options count] == [images count], @"Grid menu must have the same number of option strings and images.");
+
     if (self = [self init]) {
         self.options = options;
         self.images = images;
