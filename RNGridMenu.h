@@ -22,9 +22,13 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, readonly) NSString *title;
 
++ (instancetype)emptyItem;
+
 - (instancetype)initWithImage:(UIImage *)image title:(NSString *)title;
 - (instancetype)initWithImage:(UIImage *)image;
 - (instancetype)initWithTitle:(NSString *)title;
+
+- (BOOL)isEmpty;
 
 @end
 
@@ -84,11 +88,11 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 // Initialize the menu with a list of menu items.
 // Note: this changes the view to style RNGridMenuStyleList if no images are supplied
-- (id)initWithItems:(NSArray *)items;
+- (instancetype)initWithItems:(NSArray *)items;
 // Initialize the menu with a list of images. Maintains style RNGridMenuStyleGrid
-- (id)initWithImages:(NSArray *)images;
+- (instancetype)initWithImages:(NSArray *)images;
 // Initialize the menu with a list of titles. Note: this changes the view to style RNGridMenuStyleList since no images are supplied
-- (id)initWithTitles:(NSArray *)titles;
+- (instancetype)initWithTitles:(NSArray *)titles;
 
 // Show the menu
 - (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center;

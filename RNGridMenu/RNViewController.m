@@ -116,15 +116,15 @@
 - (void)showGridWithHeaderFromPoint:(CGPoint)point {
     NSInteger numberOfOptions = 9;
     NSArray *items = @[
-                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] title:@"Next"],
+                       [RNGridMenuItem emptyItem],
                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"attachment"] title:@"Attach"],
-                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"block"] title:@"Cancel"],
+                       [RNGridMenuItem emptyItem],
                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"bluetooth"] title:@"Bluetooth"],
                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"cube"] title:@"Deliver"],
                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"download"] title:@"Download"],
-                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"enter"] title:@"Enter"],
+                       [RNGridMenuItem emptyItem],
                        [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"file"] title:@"Source Code"],
-                       [[RNGridMenuItem alloc] initWithImage:[UIImage imageNamed:@"github"] title:@"Github"]
+                       [RNGridMenuItem emptyItem]
                        ];
 
     RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
@@ -136,7 +136,7 @@
     header.backgroundColor = [UIColor clearColor];
     header.textColor = [UIColor whiteColor];
     header.textAlignment = NSTextAlignmentCenter;
-    av.headerView = header;
+    // av.headerView = header;
     
     [av showInViewController:self center:point];
 }
