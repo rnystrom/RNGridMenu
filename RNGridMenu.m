@@ -23,12 +23,12 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     [self.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     // helps w/ our colors when blurring
     // feel free to adjust jpeg quality (lower = higher perf)
     NSData *imageData = UIImageJPEGRepresentation(image, 0.75);
     image = [UIImage imageWithData:imageData];
-    
+
     return image;
 }
 
@@ -43,33 +43,33 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     }
     int boxSize = (int)(blur * 40);
     boxSize = boxSize - (boxSize % 2) + 1;
-    
+
     CGImageRef img = self.CGImage;
     vImage_Buffer inBuffer, outBuffer;
     vImage_Error error;
     void *pixelBuffer;
-    
+
     //create vImage_Buffer with data from CGImageRef
     CGDataProviderRef inProvider = CGImageGetDataProvider(img);
     CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
-    
+
     inBuffer.width = CGImageGetWidth(img);
     inBuffer.height = CGImageGetHeight(img);
     inBuffer.rowBytes = CGImageGetBytesPerRow(img);
-    
+
     inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
-    
+
     //create vImage_Buffer for output
     pixelBuffer = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
-    
+
     if(pixelBuffer == NULL)
         NSLog(@"No pixelbuffer");
-    
+
     outBuffer.data = pixelBuffer;
     outBuffer.width = CGImageGetWidth(img);
     outBuffer.height = CGImageGetHeight(img);
     outBuffer.rowBytes = CGImageGetBytesPerRow(img);
-    
+
     // Create a third buffer for intermediate processing
     void *pixelBuffer2 = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
     vImage_Buffer outBuffer2;
@@ -77,16 +77,16 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     outBuffer2.width = CGImageGetWidth(img);
     outBuffer2.height = CGImageGetHeight(img);
     outBuffer2.rowBytes = CGImageGetBytesPerRow(img);
-    
+
     //perform convolution
     error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer2, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
     error = vImageBoxConvolve_ARGB8888(&outBuffer2, &inBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
     error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
-    
+
     if (error) {
         NSLog(@"error from convolution %ld", error);
     }
-    
+
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef ctx = CGBitmapContextCreate(outBuffer.data,
                                              outBuffer.width,
@@ -97,7 +97,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
                                              kCGImageAlphaNoneSkipLast);
     CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
     UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
-    
+
     //clean up
     CGContextRelease(ctx);
     CGColorSpaceRelease(colorSpace);
@@ -105,7 +105,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     free(pixelBuffer2);
     CFRelease(inBitmapData);
     CGImageRelease(imageRef);
-    
+
     return returnImage;
 }
 
@@ -126,12 +126,12 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 - (id)init {
     if (self = [super init]) {
         self.backgroundColor = [UIColor clearColor];
-        
+
         self.imageView = [[UIImageView alloc] init];
         self.imageView.backgroundColor = [UIColor clearColor];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:self.imageView];
-        
+
         self.titleLabel = [[UILabel alloc] init];
         self.titleLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:self.titleLabel];
@@ -141,13 +141,13 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGRect frame = self.bounds;
     CGFloat inset = floorf(CGRectGetHeight(frame) * 0.1f);
-    
+
     BOOL hasImage = self.imageView.image != nil;
     BOOL hasText = [self.titleLabel.text length] > 0;
-    
+
     if (hasImage) {
         CGFloat y = 0;
         CGFloat height = CGRectGetHeight(frame);
@@ -160,7 +160,7 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     else {
         self.imageView.frame = CGRectZero;
     }
-    
+
     if (hasText) {
         CGFloat y = 0;
         CGFloat height = CGRectGetHeight(frame);
@@ -187,8 +187,9 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 @property (nonatomic, strong, readwrite) NSArray *options;
 @property (nonatomic, strong, readwrite) NSArray *images;
 @property (nonatomic, strong) NSMutableArray *optionViews;
+@property (nonatomic, strong) RNMenuOptionView *selectedOptionView;
 @property (nonatomic, strong) UIView *blurView;
-@property (nonatomic, strong) UITapGestureRecognizer *superviewTapGesture;
+@property (nonatomic, strong) UIView *menuView;
 
 @end
 
@@ -208,11 +209,7 @@ static RNGridMenu *displayedGridMenu;
         _highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
         _menuStyle = RNGridMenuStyleDefault;
         _itemTextAlignment = NSTextAlignmentCenter;
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didChangeOrientationNotification:)
-                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
-                                                   object:nil];
+        _menuView = [UIView new];
     }
     return self;
 }
@@ -248,8 +245,44 @@ static RNGridMenu *displayedGridMenu;
     return self;
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UIResponder
+////////////////////////////////////////////////////////////////////////
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject] locationInView:self.view];
+    RNMenuOptionView *selectedOptionView = [self optionViewAtPoint:point];
+
+    [self highlightOptionView:selectedOptionView];
+    self.selectedOptionView = selectedOptionView;
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject] locationInView:self.view];
+    RNMenuOptionView *newSelectedOptionView = [self optionViewAtPoint:point];
+
+    [self highlightOptionView:newSelectedOptionView];
+    self.selectedOptionView = newSelectedOptionView;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.selectedOptionView != nil) {
+        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option:)]) {
+            [self.delegate gridMenu:self
+         willDismissWithButtonIndex:self.selectedOptionView.optionIndex
+                             option:self.options[self.selectedOptionView.optionIndex]];
+        }
+    }
+
+    [self dismiss];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    // do nothing
 }
 
 #pragma mark - UIViewController
@@ -257,46 +290,78 @@ static RNGridMenu *displayedGridMenu;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
-    self.view.opaque = NO;
-    self.view.clipsToBounds = YES;
-    self.view.layer.cornerRadius = 8;
-    self.view.autoresizingMask = UIViewAutoresizingNone;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.menuView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    self.menuView.opaque = NO;
+    self.menuView.clipsToBounds = YES;
+    self.menuView.layer.cornerRadius = 8;
+    self.menuView.autoresizingMask = UIViewAutoresizingNone;
 
     CGFloat m34 = 1 / 300.f;
     CATransform3D transform = CATransform3DIdentity;
     transform.m34 = m34;
-    self.view.layer.transform = transform;
+    self.menuView.layer.transform = transform;
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+
+    CGRect bounds = self.view.bounds;
+    self.blurView.frame = bounds;
+
+    [self styleOptionViews];
+
+    if (self.menuStyle == RNGridMenuStyleDefault) {
+        [self layoutAsGrid];
+    }
+    else if (self.menuStyle == RNGridMenuStyleList) {
+        [self layoutAsList];
+    }
+
+    CGRect headerFrame = self.headerView.frame;
+    headerFrame.size.width = self.menuView.bounds.size.width;
+    headerFrame.origin = CGPointZero;
+    self.headerView.frame = headerFrame;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [self becomeFirstResponder];
 }
 
 - (BOOL)shouldAutorotate {
     return YES;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAll;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
-    return (UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight);
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+
+    if ([self isViewLoaded] && self.view.window != nil) {
+        [self createScreenshotAndLayout];
+    }
 }
 
 #pragma mark - Actions
 
 - (void)initializeOptionsAndImages {
     self.optionViews = [NSMutableArray array];
-    
+
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     for (NSInteger i = 0; i < itemCount; i++) {
         UIImage *image = self.images[i];
         NSString *option = self.options[i];
-        
+
         RNMenuOptionView *optionView = [[RNMenuOptionView alloc] init];
         optionView.imageView.image = image;
         optionView.titleLabel.text = option;
         optionView.optionIndex = i;
-        
-        [self.view addSubview:optionView];
+
+        [self.menuView addSubview:optionView];
         [self.optionViews addObject:optionView];
     }
 }
@@ -311,61 +376,40 @@ static RNGridMenu *displayedGridMenu;
     }];
 }
 
-- (void)layoutBlurAndOptions {
-    CGRect bounds = self.view.superview.bounds;
-    self.blurView.frame = bounds;
-    
-    [self styleOptionViews];
-    
-    if (self.menuStyle == RNGridMenuStyleDefault) {
-        [self layoutAsGrid];
-    }
-    else if (self.menuStyle == RNGridMenuStyleList) {
-        [self layoutAsList];
-    }
-    
-    CGRect headerFrame = self.headerView.frame;
-    headerFrame.size.width = self.view.bounds.size.width;
-    headerFrame.origin = CGPointZero;
-    self.headerView.frame = headerFrame;
-}
-
 - (void)layoutAsList {
-    CGRect bounds = self.view.superview.bounds;
+    CGRect bounds = self.menuView.superview.bounds;
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     CGFloat height = self.itemSize.height * itemCount;
     CGFloat width = self.itemSize.width;
-    
+
     CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
     if (self.headerView) {
         frame.size.height += self.headerView.bounds.size.height;
     }
-    self.view.frame = frame;
-    
+    self.menuView.frame = frame;
+
     CGFloat headerOffset = self.headerView.bounds.size.height;
-    
+
     [self.optionViews enumerateObjectsUsingBlock:^(RNMenuOptionView *optionView, NSUInteger idx, BOOL *stop) {
         optionView.frame = CGRectMake(0, idx * self.itemSize.height + headerOffset, self.itemSize.width, self.itemSize.height);
     }];
 }
 
 - (void)layoutAsGrid {
-    CGRect bounds = self.view.superview.bounds;
+    CGRect bounds = self.menuView.superview.bounds;
     NSInteger itemCount = self.options ? [self.options count] : [self.images count];
     NSInteger rowCount = floorf(sqrtf(itemCount));
-    
+
     CGFloat height = self.itemSize.height * rowCount;
     CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
-    
-    CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
-    if (self.headerView) {
-        frame.size.height += self.headerView.bounds.size.height;
-    }
-    self.view.frame = frame;
-    
     CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
+
+    CGRect frame = CGRectMake(CGRectGetMidX(bounds) - width / 2, CGRectGetMidY(bounds) - height / 2, width, height);
     CGFloat headerOffset = self.headerView.bounds.size.height;
-    
+
+    frame.size.height += headerOffset;
+    self.menuView.frame = frame;
+
     for (NSInteger i = 0; i < rowCount; i++) {
         NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
         NSInteger offset = 0;
@@ -382,155 +426,101 @@ static RNGridMenu *displayedGridMenu;
 }
 
 - (void)createScreenshotAndLayout {
-    self.view.alpha = 0;
+    self.menuView.alpha = 0;
     self.blurView.alpha = 0;
     UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
-    self.view.alpha = 1;
+    self.menuView.alpha = 1;
     self.blurView.alpha = 1;
     UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
     self.blurView.layer.contents = (id) blur.CGImage;
-    
-    [self layoutBlurAndOptions];
-}
 
-#pragma mark - Notifications
-
-- (void)didChangeOrientationNotification:(NSNotification *)notification {
-    if ([self isViewLoaded] && self.view.superview) {
-        [self performSelector:@selector(createScreenshotAndLayout) withObject:nil afterDelay:0.01];
-    }
-}
-
-#pragma mark - Gestures
-
-- (void)superviewTapGestureHandler:(UITapGestureRecognizer *)recognizer {
-    if (recognizer == self.superviewTapGesture) {
-        RNMenuOptionView *selectedView = nil;
-        CGPoint point = [recognizer locationInView:self.view.superview];
-        if (CGRectContainsPoint(self.view.frame, point)) {
-            CGPoint localPoint = [recognizer locationInView:self.view];
-            for (RNMenuOptionView *optionView in self.optionViews) {
-                if (CGRectContainsPoint(optionView.frame, localPoint)) {
-                    selectedView = optionView;
-                    break;
-                }
-            }
-        }
-        if (selectedView) {
-            if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithButtonIndex:option:)]) {
-                [self.delegate gridMenu:self willDismissWithButtonIndex:selectedView.optionIndex option:self.options[selectedView.optionIndex]];
-            }
-            [UIView animateWithDuration:0.1f
-                                  delay:0
-                                options:UIViewAnimationOptionBeginFromCurrentState
-                             animations:^{
-                                 selectedView.backgroundColor = self.highlightColor;
-                             }
-                             completion:^(BOOL finished){
-                                 [self dismiss];
-                             }];
-        }
-        else {
-            [self dismiss];
-        }
-    }
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
 }
 
 #pragma mark - Animations
 
-- (void)show {
+- (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center {
+    [self rn_addToParentViewController:parentViewController callingAppearanceMethods:YES];
+    self.view.frame = parentViewController.view.bounds;
     [self performSelector:@selector(showAfterScreenshotDelay) withObject:nil afterDelay:0.05];
 }
 
 - (void)showAfterScreenshotDelay {
     displayedGridMenu = self;
-    
-    UIWindow * window = [UIApplication sharedApplication].keyWindow;
-    if (!window)
-        window = [[UIApplication sharedApplication].windows objectAtIndex:0];
-    
+
     UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view screenshot];
     UIImage *blur = [screenshot boxblurImageWithBlur:self.blurLevel];
-        
+
     self.blurView = [[UIView alloc] initWithFrame:[UIApplication sharedApplication].keyWindow.rootViewController.view.bounds];
     self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.blurView.layer.contents = (id) blur.CGImage;
-    
-    if(self.addsToWindow) {
-        [window addSubview:self.blurView];
-    }
-    else {
-        UIView *view = [window subviews][0];
-        [view addSubview:self.blurView];
-    }
-    
-    [self.blurView addSubview:self.view];
-    
-    self.superviewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(superviewTapGestureHandler:)];
-    [self.view.superview performSelector:@selector(addGestureRecognizer:) withObject:self.superviewTapGesture afterDelay:self.animationDuration];
-    
+    self.blurView.layer.contents = (id)blur.CGImage;
+    [self.view addSubview:self.blurView];
+    [self.blurView addSubview:self.menuView];
+
     if (self.headerView) {
-        [self.view addSubview:self.headerView];
+        [self.menuView addSubview:self.headerView];
     }
-    
-    [self layoutBlurAndOptions];
-    
+
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
+
     CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    opacityAnimation.fromValue = @(0);
-    opacityAnimation.toValue = @(1);
+    opacityAnimation.fromValue = @0.;
+    opacityAnimation.toValue = @1.;
     opacityAnimation.duration = self.animationDuration * 0.5f;
     [self.blurView.layer addAnimation:opacityAnimation forKey:nil];
-    
+
     CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
-    
-    CATransform3D startingScale = CATransform3DScale(self.view.layer.transform, 0, 0, 0);
-    CATransform3D overshootScale = CATransform3DScale(self.view.layer.transform, 1.1, 1.1, 1.0);
-    CATransform3D undershootScale = CATransform3DScale(self.view.layer.transform, 0.95, 0.95, 1.0);
-    CATransform3D endingScale = self.view.layer.transform;
-    
+
+    CATransform3D startingScale = CATransform3DScale(self.menuView.layer.transform, 0, 0, 0);
+    CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.1, 1.1, 1.0);
+    CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.95, 0.95, 1.0);
+    CATransform3D endingScale = self.menuView.layer.transform;
+
     scaleAnimation.values = @[
-                                   [NSValue valueWithCATransform3D:startingScale],
-                                   [NSValue valueWithCATransform3D:overshootScale],
-                                   [NSValue valueWithCATransform3D:undershootScale],
-                                   [NSValue valueWithCATransform3D:endingScale]
-                                   ];
-    
+                              [NSValue valueWithCATransform3D:startingScale],
+                              [NSValue valueWithCATransform3D:overshootScale],
+                              [NSValue valueWithCATransform3D:undershootScale],
+                              [NSValue valueWithCATransform3D:endingScale]
+                              ];
+
     scaleAnimation.keyTimes = @[
-                                     @(0.0f),
-                                     @(0.5f),
-                                     @(0.85f),
-                                     @(1.0f)
-                                     ];
-    
+                                @0.0f,
+                                @0.5f,
+                                @0.85f,
+                                @1.0f
+                                ];
+
     scaleAnimation.timingFunctions = @[
-                                            [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut],
-                                            [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
-                                            [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]
-                                            ];
+                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut],
+                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
+                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]
+                                       ];
     scaleAnimation.fillMode = kCAFillModeForwards;
     scaleAnimation.removedOnCompletion = NO;
-    
+
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.animations = @[
                                   scaleAnimation,
                                   opacityAnimation
                                   ];
     animationGroup.duration = self.animationDuration;
-    
-    [self.view.layer addAnimation:animationGroup forKey:nil];
+
+    [self.menuView.layer addAnimation:animationGroup forKey:nil];
 }
 
 - (void)dismiss {
     CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    opacityAnimation.fromValue = @(1);
-    opacityAnimation.toValue = @(0);
+    opacityAnimation.fromValue = @1.;
+    opacityAnimation.toValue = @0.;
     opacityAnimation.duration = self.animationDuration;
     [self.blurView.layer addAnimation:opacityAnimation forKey:nil];
-    
-    CATransform3D transform = CATransform3DScale(self.view.layer.transform, 0, 0, 0);
-    
+
+    CATransform3D transform = CATransform3DScale(self.menuView.layer.transform, 0, 0, 0);
+
     CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
-    scaleAnimation.fromValue = [NSValue valueWithCATransform3D:self.view.layer.transform];
+    scaleAnimation.fromValue = [NSValue valueWithCATransform3D:self.menuView.layer.transform];
     scaleAnimation.toValue = [NSValue valueWithCATransform3D:transform];
     scaleAnimation.duration = self.animationDuration;
 
@@ -541,19 +531,63 @@ static RNGridMenu *displayedGridMenu;
                                   ];
     animationGroup.duration = self.animationDuration;
     animationGroup.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [self.view.layer addAnimation:animationGroup forKey:nil];
-    
+    [self.menuView.layer addAnimation:animationGroup forKey:nil];
+
     self.blurView.layer.opacity = 0;
-    self.view.layer.transform = transform;
-    
+    self.menuView.layer.transform = transform;
+
     [self performSelector:@selector(cleanupGridMenu) withObject:nil afterDelay:self.animationDuration];
 }
 
 - (void)cleanupGridMenu {
-    [self.view.superview removeGestureRecognizer:self.superviewTapGesture];
-    [self.view removeFromSuperview];
-    [self.blurView removeFromSuperview];
+    [self rn_removeFromParentViewControllerCallingAppearanceMethods:YES];
+    self.selectedOptionView = nil;
     displayedGridMenu = nil;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Private
+////////////////////////////////////////////////////////////////////////
+
+- (void)rn_addToParentViewController:(UIViewController *)parentViewController callingAppearanceMethods:(BOOL)callAppearanceMethods {
+    if (self.parentViewController != nil) {
+        [self rn_removeFromParentViewControllerCallingAppearanceMethods:callAppearanceMethods];
+    }
+
+    if (callAppearanceMethods) [self beginAppearanceTransition:YES animated:NO];
+    [parentViewController addChildViewController:self];
+    [parentViewController.view addSubview:self.view];
+    [self didMoveToParentViewController:self];
+    if (callAppearanceMethods) [self endAppearanceTransition];
+}
+
+- (void)rn_removeFromParentViewControllerCallingAppearanceMethods:(BOOL)callAppearanceMethods {
+    if (callAppearanceMethods) [self beginAppearanceTransition:NO animated:NO];
+    [self willMoveToParentViewController:nil];
+    [self.view removeFromSuperview];
+    [self removeFromParentViewController];
+    if (callAppearanceMethods) [self endAppearanceTransition];
+}
+
+
+- (RNMenuOptionView *)optionViewAtPoint:(CGPoint)point {
+    RNMenuOptionView *selectedView = nil;
+
+    if (CGRectContainsPoint(self.menuView.frame, point)) {
+        point =  [self.view convertPoint:point toView:self.menuView];
+        selectedView = [[self.optionViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNMenuOptionView *optionView, NSDictionary *bindings) {
+            return CGRectContainsPoint(optionView.frame, point);
+        }]] lastObject];
+    }
+
+    return selectedView;
+}
+
+- (void)highlightOptionView:(UIView *)optionView {
+    if (optionView != self.selectedOptionView) {
+        self.selectedOptionView.backgroundColor = [UIColor clearColor];
+        optionView.backgroundColor = self.highlightColor;
+    }
 }
 
 @end

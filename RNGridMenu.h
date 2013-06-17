@@ -55,9 +55,6 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // default 0.3
 @property (nonatomic, assign) CGFloat blurLevel;
 
-// default NO
-@property (nonatomic, assign) BOOL addsToWindow;
-
 // The time in seconds for the show and dismiss animation
 // default 0.25f
 @property (nonatomic, assign) CGFloat animationDuration;
@@ -82,7 +79,7 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @property (nonatomic, strong) UIView *headerView;
 
 // Show the menu
-- (void)show;
+- (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center;
 
 // Dismiss the menu
 // This is called when the window is tapped. If tapped inside the view an item will be selected.

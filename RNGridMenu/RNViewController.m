@@ -47,7 +47,7 @@
                         [UIImage imageNamed:@"github"]
                         ];
     RNGridMenu *av = [[RNGridMenu alloc] initWithImages:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
-    [av show];
+    [av showInViewController:self center:self.view.center];
 }
 
 - (void)showList {
@@ -67,7 +67,7 @@
 //    av.itemTextAlignment = NSTextAlignmentLeft;
     av.itemFont = [UIFont boldSystemFontOfSize:18];
     av.itemSize = CGSizeMake(150, 55);
-    [av show];
+    [av showInViewController:self center:self.view.center];
 }
 
 - (void)showGrid {
@@ -95,7 +95,7 @@
                          @"Github"
                          ];
     RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
-    [av show];
+    [av showInViewController:self center:self.view.center];
 }
 
 - (void)showGridWithHeader {
@@ -132,7 +132,7 @@
     header.textAlignment = NSTextAlignmentCenter;
     av.headerView = header;
     
-    [av show];
+    [av showInViewController:self center:self.view.center];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
