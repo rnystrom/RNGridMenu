@@ -9,15 +9,17 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
-    RNGridMenuStyleDefault,
+    RNGridMenuStyleGrid,
     RNGridMenuStyleList
 };
 
 @class RNGridMenu;
+
 @protocol RNGridMenuDelegate <NSObject>
 @optional
 - (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
 @end
+
 
 @interface RNGridMenu : UIViewController
 
@@ -28,16 +30,16 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @property (nonatomic, strong, readonly) NSArray *images;
 
 // An optional delegate to receive information about what items were selected
-@property (nonatomic, weak) id <RNGridMenuDelegate> delegate;
+@property (nonatomic, weak) id<RNGridMenuDelegate> delegate;
 
 // Initialize the menu with a list of strings. Note this changes the view to style RNGridMenuStyleList since there are no images
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate;
+- (id)initWithOptions:(NSArray *)options;
 
-// Initialize the menu with a list of images. Maintains style RNGridMenuStyleDefault
-- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
+// Initialize the menu with a list of images. Maintains style RNGridMenuStyleGrid
+- (id)initWithImages:(NSArray *)images;
 
 // Initialize the menu with images and options. The count of both params must be equal (caught with assert)
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images;
 
 // The color that items will be highlighted with on selection.
 // default table view selection blue
@@ -72,7 +74,7 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @property (nonatomic, assign) NSTextAlignment itemTextAlignment;
 
 // The list layout
-// default RNGridMenuStyleDefault
+// default RNGridMenuStyleGrid
 @property (nonatomic, assign) RNGridMenuStyle menuStyle;
 
 // An optional header view. Make sure to set the frame height when setting.

@@ -208,39 +208,39 @@ static RNGridMenu *displayedGridMenu;
         _itemTextColor = [UIColor whiteColor];
         _itemFont = [UIFont boldSystemFontOfSize:14];
         _highlightColor = [UIColor colorWithRed:.02 green:.549 blue:.961 alpha:1];
-        _menuStyle = RNGridMenuStyleDefault;
+        _menuStyle = RNGridMenuStyleGrid;
         _itemTextAlignment = NSTextAlignmentCenter;
         _menuView = [UIView new];
     }
     return self;
 }
 
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate {
+- (id)initWithOptions:(NSArray *)options {
     if (self = [self init]) {
-        self.menuStyle = RNGridMenuStyleList;
-        self.options = options;
-        self.delegate = delegate;
+        _menuStyle = RNGridMenuStyleList;
+        _options = [options copy];
+        
         [self initializeOptionsAndImages];
     }
     return self;
 }
 
-- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
+- (id)initWithImages:(NSArray *)images {
     if (self = [self init]) {
-        self.images = images;
-        self.delegate = delegate;
+        _images = [images copy];
+        
         [self initializeOptionsAndImages];
     }
     return self;
 }
 
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate {
+- (id)initWithOptions:(NSArray *)options images:(NSArray *)images {
     NSAssert([options count] == [images count], @"Grid menu must have the same number of option strings and images.");
 
     if (self = [self init]) {
-        self.options = options;
-        self.images = images;
-        self.delegate = delegate;
+        _options = [options copy];
+        _images = [images copy];
+
         [self initializeOptionsAndImages];
     }
     return self;
@@ -312,7 +312,7 @@ static RNGridMenu *displayedGridMenu;
 
     [self styleOptionViews];
 
-    if (self.menuStyle == RNGridMenuStyleDefault) {
+    if (self.menuStyle == RNGridMenuStyleGrid) {
         [self layoutAsGrid];
     }
     else if (self.menuStyle == RNGridMenuStyleList) {

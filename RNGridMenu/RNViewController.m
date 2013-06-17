@@ -44,7 +44,8 @@
                         [UIImage imageNamed:@"file"],
                         [UIImage imageNamed:@"github"]
                         ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithImages:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+    RNGridMenu *av = [[RNGridMenu alloc] initWithImages:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    av.delegate = self;
     [av showInViewController:self center:self.view.center];
 }
 
@@ -61,7 +62,8 @@
                          @"Source Code",
                          @"Github"
                          ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    av.delegate = self;
 //    av.itemTextAlignment = NSTextAlignmentLeft;
     av.itemFont = [UIFont boldSystemFontOfSize:18];
     av.itemSize = CGSizeMake(150, 55);
@@ -92,7 +94,8 @@
                          @"Source Code",
                          @"Github"
                          ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    av.delegate = self;
     [av showInViewController:self center:self.view.center];
 }
 
@@ -120,7 +123,9 @@
                          @"Source Code",
                          @"Github"
                          ];
-    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)] images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)] delegate:self];
+    RNGridMenu *av = [[RNGridMenu alloc] initWithOptions:[options subarrayWithRange:NSMakeRange(0, numberOfOptions)]
+                                                  images:[images subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
+    av.delegate = self;
     
     UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 44)];
     header.text = @"Example Header";
