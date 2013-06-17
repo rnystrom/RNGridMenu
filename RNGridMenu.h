@@ -37,7 +37,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 @protocol RNGridMenuDelegate <NSObject>
 @optional
-- (void)gridMenu:(RNGridMenu *)gridMenu willDismissItem:(RNGridMenuItem *)item withIndex:(NSInteger)itemIndex;
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithSelectedItem:(RNGridMenuItem *)item atIndex:(NSInteger)itemIndex;
+- (void)gridMenuWillDismiss:(RNGridMenu *)gridMenu;
 @end
 
 

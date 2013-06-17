@@ -44,7 +44,7 @@
 #pragma mark - RNGridMenuDelegate
 ////////////////////////////////////////////////////////////////////////
 
-- (void)gridMenu:(RNGridMenu *)gridMenu willDismissItem:(RNGridMenuItem *)item withIndex:(NSInteger)itemIndex {
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithSelectedItem:(RNGridMenuItem *)item atIndex:(NSInteger)itemIndex {
     NSLog(@"Dismissed with item %d: %@", itemIndex, item.title);
 }
 

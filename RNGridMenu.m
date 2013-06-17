@@ -342,14 +342,18 @@ static RNGridMenu *rn_visibleGridMenu;
     if (self.selectedItemView != nil) {
         RNGridMenuItem *item = self.items[self.selectedItemView.itemIndex];
         
-        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissItem:withIndex:)]) {
+        if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissWithSelectedItem:atIndex:)]) {
             [self.delegate gridMenu:self
-                    willDismissItem:item
-                          withIndex:self.selectedItemView.itemIndex];
+        willDismissWithSelectedItem:item
+                            atIndex:self.selectedItemView.itemIndex];
         }
 
         if (item.action != nil) {
             item.action();
+        }
+    } else {
+        if ([self.delegate respondsToSelector:@selector(gridMenuWillDismiss:)]) {
+            [self.delegate gridMenuWillDismiss:self];
         }
     }
 
