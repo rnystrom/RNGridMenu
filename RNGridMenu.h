@@ -22,8 +22,11 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @property (nonatomic, readonly) UIImage *image;
 @property (nonatomic, readonly) NSString *title;
 
+@property (nonatomic, copy) dispatch_block_t action;
+
 + (instancetype)emptyItem;
 
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title action:(dispatch_block_t)action;
 - (instancetype)initWithImage:(UIImage *)image title:(NSString *)title;
 - (instancetype)initWithImage:(UIImage *)image;
 - (instancetype)initWithTitle:(NSString *)title;
@@ -110,14 +113,3 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 @interface RNLongPressGestureRecognizer : UILongPressGestureRecognizer
 
 @end
-
-@protocol RNLongPressGestureRecognizerDelegate <UIGestureRecognizerDelegate>
-
-- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress beganTouches:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress movedTouches:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress endedTouches:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)gestureRecognizer:(RNLongPressGestureRecognizer *)longPress cancelledTouches:(NSSet *)touches withEvent:(UIEvent *)event;
-
-@end
-
-

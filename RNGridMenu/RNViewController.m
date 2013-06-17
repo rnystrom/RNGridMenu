@@ -2,7 +2,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface RNViewController () <RNLongPressGestureRecognizerDelegate>
+@interface RNViewController ()
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 

@@ -198,27 +198,32 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
     static RNGridMenuItem *emptyItem = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        emptyItem = [[RNGridMenuItem alloc] initWithImage:nil title:nil];
+        emptyItem = [[RNGridMenuItem alloc] initWithImage:nil title:nil action:nil];
     });
 
     return emptyItem;
 }
 
-- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title {
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title action:(dispatch_block_t)action {
     if ((self = [super init])) {
         _image = image;
         _title = [title copy];
+        _action = [action copy];
     }
 
     return self;
 }
 
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title {
+    return [self initWithImage:image title:title action:nil];
+}
+
 - (instancetype)initWithImage:(UIImage *)image {
-    return [self initWithImage:image title:nil];
+    return [self initWithImage:image title:nil action:nil];
 }
 
 - (instancetype)initWithTitle:(NSString *)title {
-    return [self initWithImage:nil title:title];
+    return [self initWithImage:nil title:title action:nil];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -335,10 +340,16 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.selectedItemView != nil) {
+        RNGridMenuItem *item = self.items[self.selectedItemView.itemIndex];
+        
         if ([self.delegate respondsToSelector:@selector(gridMenu:willDismissItem:withIndex:)]) {
             [self.delegate gridMenu:self
-                    willDismissItem:self.items[self.selectedItemView.itemIndex]
+                    willDismissItem:item
                           withIndex:self.selectedItemView.itemIndex];
+        }
+
+        if (item.action != nil) {
+            item.action();
         }
     }
 
@@ -695,8 +706,8 @@ static RNGridMenu *rn_visibleGridMenu;
 
 @end
 
-#import <UIKit/UIGestureRecognizerSubclass.h>
 
+#import <UIKit/UIGestureRecognizerSubclass.h>
 
 @implementation RNLongPressGestureRecognizer {
     BOOL _touchesDidMove;
