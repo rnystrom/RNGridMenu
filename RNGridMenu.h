@@ -8,40 +8,53 @@
 
 #import <UIKit/UIKit.h>
 
+
 typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
-    RNGridMenuStyleDefault,
+    RNGridMenuStyleGrid,
     RNGridMenuStyleList
 };
 
+
 @class RNGridMenu;
+
+@interface RNGridMenuItem : NSObject
+
+@property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, readonly) NSString *title;
+
+@property (nonatomic, copy) dispatch_block_t action;
+
++ (instancetype)emptyItem;
+
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title action:(dispatch_block_t)action;
+- (instancetype)initWithImage:(UIImage *)image title:(NSString *)title;
+- (instancetype)initWithImage:(UIImage *)image;
+- (instancetype)initWithTitle:(NSString *)title;
+
+- (BOOL)isEmpty;
+
+@end
+
 @protocol RNGridMenuDelegate <NSObject>
 @optional
-- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithButtonIndex:(NSInteger)buttonIndex option:(NSString *)option;
+- (void)gridMenu:(RNGridMenu *)gridMenu willDismissWithSelectedItem:(RNGridMenuItem *)item atIndex:(NSInteger)itemIndex;
+- (void)gridMenuWillDismiss:(RNGridMenu *)gridMenu;
 @end
+
 
 @interface RNGridMenu : UIViewController
 
-// A list of NSStrings
-@property (nonatomic, strong, readonly) NSArray *options;
++ (instancetype)visibleGridMenu;
 
-// A list of UIImages
-@property (nonatomic, strong, readonly) NSArray *images;
+// the menu items. Instances of RNGridMenuItem
+@property (nonatomic, readonly) NSArray *items;
 
 // An optional delegate to receive information about what items were selected
-@property (nonatomic, weak) id <RNGridMenuDelegate> delegate;
-
-// Initialize the menu with a list of strings. Note this changes the view to style RNGridMenuStyleList since there are no images
-- (id)initWithOptions:(NSArray *)options delegate:(id <RNGridMenuDelegate>)delegate;
-
-// Initialize the menu with a list of images. Maintains style RNGridMenuStyleDefault
-- (id)initWithImages:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
-
-// Initialize the menu with images and options. The count of both params must be equal (caught with assert)
-- (id)initWithOptions:(NSArray *)options images:(NSArray *)images delegate:(id <RNGridMenuDelegate>)delegate;
+@property (nonatomic, weak) id<RNGridMenuDelegate> delegate;
 
 // The color that items will be highlighted with on selection.
 // default table view selection blue
-@property (nonatomic, copy) UIColor *highlightColor;
+@property (nonatomic, strong) UIColor *highlightColor;
 
 // The background color of the main view (note this is a UIViewController subclass)
 // default black with 0.7 alpha
@@ -55,38 +68,52 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // default 0.3
 @property (nonatomic, assign) CGFloat blurLevel;
 
-// default NO
-@property (nonatomic, assign) BOOL addsToWindow;
-
 // The time in seconds for the show and dismiss animation
 // default 0.25f
 @property (nonatomic, assign) CGFloat animationDuration;
 
 // The text color for list items
 // default white
-@property (nonatomic, copy) UIColor *itemTextColor;
+@property (nonatomic, strong) UIColor *itemTextColor;
 
 // The font used for list items
 // default bold size 14
-@property (nonatomic, copy) UIFont *itemFont;
+@property (nonatomic, strong) UIFont *itemFont;
 
 // The text alignment of the item titles
 // default center
 @property (nonatomic, assign) NSTextAlignment itemTextAlignment;
 
 // The list layout
-// default RNGridMenuStyleDefault
+// default RNGridMenuStyleGrid
 @property (nonatomic, assign) RNGridMenuStyle menuStyle;
 
 // An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
+// an optional block that gets executed before the gridMenu gets dismissed
+@property (nonatomic, copy) dispatch_block_t dismissAction;
+
+
+// Initialize the menu with a list of menu items.
+// Note: this changes the view to style RNGridMenuStyleList if no images are supplied
+- (instancetype)initWithItems:(NSArray *)items;
+// Initialize the menu with a list of images. Maintains style RNGridMenuStyleGrid
+- (instancetype)initWithImages:(NSArray *)images;
+// Initialize the menu with a list of titles. Note: this changes the view to style RNGridMenuStyleList since no images are supplied
+- (instancetype)initWithTitles:(NSArray *)titles;
+
 // Show the menu
-- (void)show;
+- (void)showInViewController:(UIViewController *)parentViewController center:(CGPoint)center;
 
 // Dismiss the menu
 // This is called when the window is tapped. If tapped inside the view an item will be selected.
 // If tapped outside the view, the menu is simply dismissed.
 - (void)dismiss;
+
+@end
+
+
+@interface RNLongPressGestureRecognizer : UILongPressGestureRecognizer
 
 @end
