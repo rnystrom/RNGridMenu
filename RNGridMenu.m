@@ -717,21 +717,33 @@ static RNGridMenu *rn_visibleGridMenu;
 
 @implementation RNLongPressGestureRecognizer {
     BOOL _touchesDidMove;
+    CGPoint _startLocation;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
 
     _touchesDidMove = NO;
+    _startLocation = [[touches anyObject] locationInView:self.view];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesMoved:touches withEvent:event];
 
-    RNGridMenu *menu = [RNGridMenu visibleGridMenu];
-    [menu touchesMoved:touches withEvent:event];
+    if (!_touchesDidMove) {
+        // detect if touches moved at least self.allowableMovement
+        CGPoint location = [[touches anyObject] locationInView:self.view];
+        CGFloat distanceSquared = (location.x - _startLocation.x) * (location.x - _startLocation.x) + (location.y - _startLocation.y) * (location.y - _startLocation.y);
 
-    _touchesDidMove = YES;
+        if (distanceSquared >= self.allowableMovement * self.allowableMovement) {
+            _touchesDidMove = YES;
+        }
+    }
+
+    if (_touchesDidMove) {
+        RNGridMenu *menu = [RNGridMenu visibleGridMenu];
+        [menu touchesMoved:touches withEvent:event];
+    }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
