@@ -299,7 +299,7 @@ static RNGridMenu *rn_visibleGridMenu;
         RNGridMenuItem *item = [[RNGridMenuItem alloc] initWithImage:image];
         [items addObject:item];
     }
-    
+
     return [self initWithItems:items];
 }
 
@@ -343,7 +343,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
     if (self.selectedItemView != nil) {
         RNGridMenuItem *item = self.items[self.selectedItemView.itemIndex];
-        
+
         if ([delegate respondsToSelector:@selector(gridMenu:willDismissWithSelectedItem:atIndex:)]) {
             [delegate gridMenu:self
    willDismissWithSelectedItem:item
@@ -492,16 +492,18 @@ static RNGridMenu *rn_visibleGridMenu;
 }
 
 - (void)createScreenshotAndLayout {
-    self.menuView.alpha = 0.f;
-    self.blurView.alpha = 0.f;
-    UIImage *screenshot = [[UIApplication sharedApplication].keyWindow.rootViewController.view rn_screenshot];
-    self.menuView.alpha = 1.f;
-    self.blurView.alpha = 1.f;
-    UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
-    self.blurView.layer.contents = (id)blur.CGImage;
+    if (self.blurLevel > 0.f) {
+        self.menuView.alpha = 0.f;
+        self.blurView.alpha = 0.f;
+        UIImage *screenshot = [self.parentViewController.view rn_screenshot];
+        self.menuView.alpha = 1.f;
+        self.blurView.alpha = 1.f;
+        UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
+        self.blurView.layer.contents = (id)blur.CGImage;
 
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
+        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
+    }
 }
 
 #pragma mark - Animations
@@ -514,7 +516,7 @@ static RNGridMenu *rn_visibleGridMenu;
     }
 
     [self rn_addToParentViewController:parentViewController callingAppearanceMethods:YES];
-    self.menuCenter = center;
+    self.menuCenter = [self.view convertPoint:center toView:self.view];
     self.view.frame = parentViewController.view.bounds;
 
     [self showAfterScreenshotDelay];
@@ -523,21 +525,15 @@ static RNGridMenu *rn_visibleGridMenu;
 - (void)showAfterScreenshotDelay {
     rn_visibleGridMenu = self;
 
-    UIImage *screenshot = [self.parentViewController.view rn_screenshot];
-    UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
-
     self.blurView = [[UIView alloc] initWithFrame:self.parentViewController.view.bounds];
     self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.blurView.layer.contents = (id)blur.CGImage;
     [self.view addSubview:self.blurView];
     [self.blurView addSubview:self.menuView];
-
     if (self.headerView) {
         [self.menuView addSubview:self.headerView];
     }
 
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
+    [self createScreenshotAndLayout];
 
     CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     opacityAnimation.fromValue = @0.;
@@ -749,7 +745,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesCancelled:touches withEvent:event];
-
+    
     if (_touchesDidMove) {
         RNGridMenu *menu = [RNGridMenu visibleGridMenu];
         [menu touchesCancelled:touches withEvent:event];
