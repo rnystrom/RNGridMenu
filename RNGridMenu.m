@@ -544,8 +544,8 @@ static RNGridMenu *rn_visibleGridMenu;
     CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
 
     CATransform3D startingScale = CATransform3DScale(self.menuView.layer.transform, 0, 0, 0);
-    CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.1, 1.1, 1.0);
-    CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.95, 0.95, 1.0);
+    CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.05, 1.05, 1.0);
+    CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.98, 0.98, 1.0);
     CATransform3D endingScale = self.menuView.layer.transform;
 
     scaleAnimation.values = @[
@@ -567,8 +567,6 @@ static RNGridMenu *rn_visibleGridMenu;
                                        [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
                                        [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]
                                        ];
-    scaleAnimation.fillMode = kCAFillModeForwards;
-    scaleAnimation.removedOnCompletion = NO;
 
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.animations = @[
