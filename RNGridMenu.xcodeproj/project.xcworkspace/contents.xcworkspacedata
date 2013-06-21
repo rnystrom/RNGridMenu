@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:RNGridView.xcodeproj">
+      location = "self:RNGridMenu.xcodeproj">
    </FileRef>
 </Workspace>

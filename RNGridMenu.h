@@ -91,9 +91,12 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
-// an optional block that gets executed before the gridMenu gets dismissed
+// An optional block that gets executed before the gridMenu gets dismissed
 @property (nonatomic, copy) dispatch_block_t dismissAction;
 
+// Determine whether or not to bounce in the animation
+// default YES
+@property (nonatomic, assign) BOOL bounces;
 
 // Initialize the menu with a list of menu items.
 // Note: this changes the view to style RNGridMenuStyleList if no images are supplied

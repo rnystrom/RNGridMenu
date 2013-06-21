@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "861940481767A8480052C089"
                BuildableName = "RNGridView.app"
-               BlueprintName = "RNGridView"
-               ReferencedContainer = "container:RNGridView.xcodeproj">
+               BlueprintName = "RNGridMenu"
+               ReferencedContainer = "container:RNGridMenu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
             BuildableName = "RNGridView.app"
-            BlueprintName = "RNGridView"
-            ReferencedContainer = "container:RNGridView.xcodeproj">
+            BlueprintName = "RNGridMenu"
+            ReferencedContainer = "container:RNGridMenu.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,8 +53,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
             BuildableName = "RNGridView.app"
-            BlueprintName = "RNGridView"
-            ReferencedContainer = "container:RNGridView.xcodeproj">
+            BlueprintName = "RNGridMenu"
+            ReferencedContainer = "container:RNGridMenu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -76,8 +76,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "861940481767A8480052C089"
             BuildableName = "RNGridView.app"
-            BlueprintName = "RNGridView"
-            ReferencedContainer = "container:RNGridView.xcodeproj">
+            BlueprintName = "RNGridMenu"
+            ReferencedContainer = "container:RNGridMenu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
