@@ -272,6 +272,7 @@ static RNGridMenu *rn_visibleGridMenu;
 - (instancetype)initWithItems:(NSArray *)items {
     if ((self = [super init])) {
         _itemSize = CGSizeMake(100.f, 100.f);
+        _cornerRadius = 8.f;
         _blurLevel = kRNGridMenuDefaultBlur;
         _animationDuration = kRNGridMenuDefaultDuration;
         _itemTextColor = [UIColor whiteColor];
@@ -376,7 +377,7 @@ static RNGridMenu *rn_visibleGridMenu;
     self.menuView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
     self.menuView.opaque = NO;
     self.menuView.clipsToBounds = YES;
-    self.menuView.layer.cornerRadius = 8.f;
+    self.menuView.layer.cornerRadius = self.cornerRadius;
 
     CGFloat m34 = 1 / 300.f;
     CATransform3D transform = CATransform3DIdentity;

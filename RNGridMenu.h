@@ -58,11 +58,14 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 // The background color of the main view (note this is a UIViewController subclass)
 // default black with 0.7 alpha
-@property (nonatomic, strong, readonly) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *backgroundColor;
 
 // The size of an item
 // default {100, 100}
 @property (nonatomic, assign) CGSize itemSize;
+
+// defaults to 8
+@property (nonatomic, assign) CGFloat cornerRadius;
 
 // The level of blur for the background image. Range is 0.0 to 1.0
 // default 0.3
