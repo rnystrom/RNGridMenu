@@ -195,6 +195,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     if (self = [super init]) {
         self.backgroundColor = [UIColor clearColor];
 
+
         _imageView = [[UIImageView alloc] init];
         _imageView.backgroundColor = [UIColor clearColor];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -342,6 +343,7 @@ static RNGridMenu *rn_visibleGridMenu;
         _menuStyle = RNGridMenuStyleGrid;
         _itemTextAlignment = NSTextAlignmentCenter;
         _menuView = [UIView new];
+        _backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
 
         BOOL hasImages = [items filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNGridMenuItem *item, NSDictionary *bindings) {
             return item.image != nil;
@@ -435,15 +437,24 @@ static RNGridMenu *rn_visibleGridMenu;
     [super viewDidLoad];
 
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.menuView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    self.menuView.backgroundColor = self.backgroundColor;
     self.menuView.opaque = NO;
     self.menuView.clipsToBounds = YES;
-    self.menuView.layer.cornerRadius = self.cornerRadius;
 
     CGFloat m34 = 1 / 300.f;
     CATransform3D transform = CATransform3DIdentity;
     transform.m34 = m34;
     self.menuView.layer.transform = transform;
+
+    if (self.backgroundPath != nil) {
+        CAShapeLayer *maskLayer = [CAShapeLayer new];
+        maskLayer.frame = self.menuView.frame;
+        maskLayer.transform = self.menuView.layer.transform;
+        maskLayer.path = self.backgroundPath.CGPath;
+        self.menuView.layer.mask = maskLayer;
+    } else {
+        self.menuView.layer.cornerRadius = self.cornerRadius;
+    }
 }
 
 - (void)viewWillLayoutSubviews {

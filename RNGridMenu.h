@@ -60,12 +60,15 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // default black with 0.7 alpha
 @property (nonatomic, strong) UIColor *backgroundColor;
 
+// defaults to nil, the path to be applied as a mask to the background image. if this path is set, cornerRadius is ignored
+@property (nonatomic, strong) UIBezierPath *backgroundPath;
+
+// defaults to 8 (only applied if backgroundPath == nil)
+@property (nonatomic, assign) CGFloat cornerRadius;
+
 // The size of an item
 // default {100, 100}
 @property (nonatomic, assign) CGSize itemSize;
-
-// defaults to 8
-@property (nonatomic, assign) CGFloat cornerRadius;
 
 // The level of blur for the background image. Range is 0.0 to 1.0
 // default 0.3
