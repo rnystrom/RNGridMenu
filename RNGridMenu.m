@@ -17,6 +17,24 @@ CGFloat const kRNGridMenuDefaultWidth = 280;
 
 
 ////////////////////////////////////////////////////////////////////////
+#pragma mark - Functions
+////////////////////////////////////////////////////////////////////////
+
+CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
+    CGFloat sumX = 0.f;
+    CGFloat sumY = 0.f;
+
+    for (UITouch *touch in touches) {
+        CGPoint location = [touch locationInView:view];
+        sumX += location.x;
+        sumY += location.y;
+    }
+
+    return CGPointMake((CGFloat)round(sumX / touches.count), (CGFloat)round(sumY / touches.count));
+}
+
+
+////////////////////////////////////////////////////////////////////////
 #pragma mark - Categories
 ////////////////////////////////////////////////////////////////////////
 
@@ -328,13 +346,13 @@ static RNGridMenu *rn_visibleGridMenu;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    CGPoint point = [[touches anyObject] locationInView:self.view];
+    CGPoint point = RNCentroidOfTouchesInView(touches, self.view);
 
     [self selectItemViewAtPoint:point];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    CGPoint point = [[touches anyObject] locationInView:self.view];
+    CGPoint point = RNCentroidOfTouchesInView(touches, self.view);
 
     [self selectItemViewAtPoint:point];
 }
