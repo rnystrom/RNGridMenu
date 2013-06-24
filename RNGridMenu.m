@@ -59,10 +59,11 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 
 @implementation UIImage (Blur)
 
--(UIImage *)rn_boxblurImageWithBlur:(CGFloat)blur {
+-(UIImage *)rn_boxblurImageWithBlur:(CGFloat)blur exclusionPath:(UIBezierPath *)exclusionPath {
     if (blur < 0.f || blur > 1.f) {
         blur = 0.5f;
     }
+    
     int boxSize = (int)(blur * 40);
     boxSize = boxSize - (boxSize % 2) + 1;
 
@@ -70,6 +71,37 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     vImage_Buffer inBuffer, outBuffer;
     vImage_Error error;
     void *pixelBuffer;
+
+    // create unchanged copy of the area inside the exclusionPath
+    UIImage *unblurredImage = nil;
+    if (exclusionPath != nil) {
+        CAShapeLayer *maskLayer = [CAShapeLayer new];
+        maskLayer.frame = (CGRect){CGPointZero, self.size};
+        maskLayer.backgroundColor = [UIColor blackColor].CGColor;
+        maskLayer.fillColor = [UIColor whiteColor].CGColor;
+        maskLayer.path = exclusionPath.CGPath;
+
+        // create grayscale image to mask context
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        CGContextRef context = CGBitmapContextCreate(nil, maskLayer.bounds.size.width, maskLayer.bounds.size.height, 8, 0, colorSpace, kCGImageAlphaNone);
+        CGContextTranslateCTM(context, 0, maskLayer.bounds.size.height);
+        CGContextScaleCTM(context, 1.f, -1.f);
+        [maskLayer renderInContext:context];
+        CGImageRef imageRef = CGBitmapContextCreateImage(context);
+        UIImage *maskImage = [UIImage imageWithCGImage:imageRef];
+        CGImageRelease(imageRef);
+        CGColorSpaceRelease(colorSpace);
+        CGContextRelease(context);
+
+        UIGraphicsBeginImageContext(self.size);
+        context = UIGraphicsGetCurrentContext();
+        CGContextTranslateCTM(context, 0, maskLayer.bounds.size.height);
+        CGContextScaleCTM(context, 1.f, -1.f);
+        CGContextClipToMask(context, maskLayer.bounds, maskImage.CGImage);
+        CGContextDrawImage(context, maskLayer.bounds, self.CGImage);
+        unblurredImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+    }
 
     //create vImage_Buffer with data from CGImageRef
     CGDataProviderRef inProvider = CGImageGetDataProvider(img);
@@ -117,8 +149,19 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
                                              outBuffer.rowBytes,
                                              colorSpace,
                                              kCGImageAlphaNoneSkipLast);
-    CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
+    CGImageRef imageRef = CGBitmapContextCreateImage(ctx);
     UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
+
+    // overlay images?
+    if (unblurredImage != nil) {
+        UIGraphicsBeginImageContext(returnImage.size);
+        [returnImage drawAtPoint:CGPointZero];
+        [unblurredImage drawAtPoint:CGPointZero];
+
+        returnImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
+    }
 
     //clean up
     CGContextRelease(ctx);
@@ -517,7 +560,7 @@ static RNGridMenu *rn_visibleGridMenu;
         UIImage *screenshot = [self.parentViewController.view rn_screenshot];
         self.menuView.alpha = 1.f;
         self.blurView.alpha = 1.f;
-        UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel];
+        UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel exclusionPath:self.blurExclusionPath];
         self.blurView.layer.contents = (id)blur.CGImage;
 
         [self.view setNeedsLayout];

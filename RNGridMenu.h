@@ -70,6 +70,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // The level of blur for the background image. Range is 0.0 to 1.0
 // default 0.3
 @property (nonatomic, assign) CGFloat blurLevel;
+// defaults to nil ( == the whole background gets blurred)
+@property (nonatomic, strong) UIBezierPath *blurExclusionPath;
 
 // The time in seconds for the show and dismiss animation
 // default 0.25f
