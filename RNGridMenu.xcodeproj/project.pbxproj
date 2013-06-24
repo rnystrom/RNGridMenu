@@ -34,7 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		861940491767A8480052C089 /* RNGridView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNGridView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		861940491767A8480052C089 /* RNGridMenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNGridMenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8619404C1767A8480052C089 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8619404E1767A8480052C089 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		861940501767A8480052C089 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -60,8 +60,8 @@
 		86C675D3176B543D00000739 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = RNGridMenu/Default.png; sourceTree = SOURCE_ROOT; };
 		86C675D4176B543D00000739 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "RNGridMenu/Default@2x.png"; sourceTree = SOURCE_ROOT; };
 		86C675D5176B543D00000739 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNGridMenu/main.m; sourceTree = SOURCE_ROOT; };
-		86C675D6176B543D00000739 /* RNGridView-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "RNGridView-Info.plist"; path = "RNGridMenu/RNGridView-Info.plist"; sourceTree = SOURCE_ROOT; };
-		86C675D7176B543D00000739 /* RNGridView-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RNGridView-Prefix.pch"; path = "RNGridMenu/RNGridView-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		86C675D6176B543D00000739 /* RNGridMenu-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "RNGridMenu-Info.plist"; path = "RNGridMenu/RNGridMenu-Info.plist"; sourceTree = SOURCE_ROOT; };
+		86C675D7176B543D00000739 /* RNGridMenu-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RNGridMenu-Prefix.pch"; path = "RNGridMenu/RNGridMenu-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		86C675DE176B545300000739 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = RNGridMenu/en.lproj/MainStoryboard_iPad.storyboard; sourceTree = SOURCE_ROOT; };
 		86C675E0176B545300000739 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = RNGridMenu/en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = SOURCE_ROOT; };
 		86C675E4176B546000000739 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = RNGridMenu/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
@@ -97,7 +97,7 @@
 		8619404A1767A8480052C089 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				861940491767A8480052C089 /* RNGridView.app */,
+				861940491767A8480052C089 /* RNGridMenu.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -138,8 +138,8 @@
 				86C675D3176B543D00000739 /* Default.png */,
 				86C675D4176B543D00000739 /* Default@2x.png */,
 				86C675D5176B543D00000739 /* main.m */,
-				86C675D6176B543D00000739 /* RNGridView-Info.plist */,
-				86C675D7176B543D00000739 /* RNGridView-Prefix.pch */,
+				86C675D6176B543D00000739 /* RNGridMenu-Info.plist */,
+				86C675D7176B543D00000739 /* RNGridMenu-Prefix.pch */,
 				86C675E3176B546000000739 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -164,9 +164,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		861940481767A8480052C089 /* RNGridView */ = {
+		861940481767A8480052C089 /* RNGridMenu */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNGridView" */;
+			buildConfigurationList = 8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNGridMenu" */;
 			buildPhases = (
 				861940451767A8480052C089 /* Sources */,
 				861940461767A8480052C089 /* Frameworks */,
@@ -176,9 +176,9 @@
 			);
 			dependencies = (
 			);
-			name = RNGridView;
+			name = RNGridMenu;
 			productName = RNAlertView;
-			productReference = 861940491767A8480052C089 /* RNGridView.app */;
+			productReference = 861940491767A8480052C089 /* RNGridMenu.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Ryan Nystrom";
 			};
-			buildConfigurationList = 861940441767A8480052C089 /* Build configuration list for PBXProject "RNGridView" */;
+			buildConfigurationList = 861940441767A8480052C089 /* Build configuration list for PBXProject "RNGridMenu" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -203,7 +203,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				861940481767A8480052C089 /* RNGridView */,
+				861940481767A8480052C089 /* RNGridMenu */,
 			);
 		};
 /* End PBXProject section */
@@ -337,10 +337,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RNGridMenu/RNGridView-Prefix.pch";
-				INFOPLIST_FILE = "RNGridMenu/RNGridView-Info.plist";
+				GCC_PREFIX_HEADER = "RNGridMenu/RNGridMenu-Prefix.pch";
+				INFOPLIST_FILE = "RNGridMenu/RNGridMenu-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				PRODUCT_NAME = RNGridView;
+				PRODUCT_NAME = RNGridMenu;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -349,10 +349,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RNGridMenu/RNGridView-Prefix.pch";
-				INFOPLIST_FILE = "RNGridMenu/RNGridView-Info.plist";
+				GCC_PREFIX_HEADER = "RNGridMenu/RNGridMenu-Prefix.pch";
+				INFOPLIST_FILE = "RNGridMenu/RNGridMenu-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
-				PRODUCT_NAME = RNGridView;
+				PRODUCT_NAME = RNGridMenu;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -360,7 +360,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		861940441767A8480052C089 /* Build configuration list for PBXProject "RNGridView" */ = {
+		861940441767A8480052C089 /* Build configuration list for PBXProject "RNGridMenu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8619406D1767A8480052C089 /* Debug */,
@@ -369,7 +369,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNGridView" */ = {
+		8619406F1767A8480052C089 /* Build configuration list for PBXNativeTarget "RNGridMenu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				861940701767A8480052C089 /* Debug */,

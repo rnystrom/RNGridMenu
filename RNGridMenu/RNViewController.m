@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (IBAction)onShowButton:(id)sender {
-    [self showList];
+    [self showGrid];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)longPress {
@@ -107,6 +107,7 @@
 
     RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
+//    av.bounces = NO;
     [av showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 

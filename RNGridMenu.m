@@ -344,6 +344,7 @@ static RNGridMenu *rn_visibleGridMenu;
         _itemTextAlignment = NSTextAlignmentCenter;
         _menuView = [UIView new];
         _backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+        _bounces = YES;
 
         BOOL hasImages = [items filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNGridMenuItem *item, NSDictionary *bindings) {
             return item.image != nil;
@@ -620,26 +621,26 @@ static RNGridMenu *rn_visibleGridMenu;
     CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.05, 1.05, 1.0);
     CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.98, 0.98, 1.0);
     CATransform3D endingScale = self.menuView.layer.transform;
-
-    scaleAnimation.values = @[
-                              [NSValue valueWithCATransform3D:startingScale],
-                              [NSValue valueWithCATransform3D:overshootScale],
-                              [NSValue valueWithCATransform3D:undershootScale],
-                              [NSValue valueWithCATransform3D:endingScale]
-                              ];
-
-    scaleAnimation.keyTimes = @[
-                                @0.0f,
-                                @0.5f,
-                                @0.85f,
-                                @1.0f
-                                ];
-
-    scaleAnimation.timingFunctions = @[
-                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut],
-                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut],
-                                       [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]
-                                       ];
+    
+    NSMutableArray *scaleValues = [NSMutableArray arrayWithObject:[NSValue valueWithCATransform3D:startingScale]];
+    NSMutableArray *keyTimes = [NSMutableArray arrayWithObject:@0.0f];
+    NSMutableArray *timingFunctions = [NSMutableArray arrayWithObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+    
+    if (self.bounces) {
+        [scaleValues addObjectsFromArray:@[[NSValue valueWithCATransform3D:overshootScale],
+                                           [NSValue valueWithCATransform3D:undershootScale]]];
+        [keyTimes addObjectsFromArray:@[@0.5f,
+                                        @0.85f]];
+        [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    }
+    
+    [scaleValues addObject:[NSValue valueWithCATransform3D:endingScale]];
+    [keyTimes addObject:@1.0f];
+    [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    
+    scaleAnimation.values = scaleValues;
+    scaleAnimation.keyTimes = keyTimes;
+    scaleAnimation.timingFunctions = timingFunctions;
 
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.animations = @[
