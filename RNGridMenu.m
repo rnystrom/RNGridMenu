@@ -63,7 +63,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     if (blur < 0.f || blur > 1.f) {
         blur = 0.5f;
     }
-    
+
     int boxSize = (int)(blur * 40);
     boxSize = boxSize - (boxSize % 2) + 1;
 
@@ -159,7 +159,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
         [unblurredImage drawAtPoint:CGPointZero];
 
         returnImage = UIGraphicsGetImageFromCurrentImageContext();
-        
+
         UIGraphicsEndImageContext();
     }
 
@@ -387,10 +387,6 @@ static RNGridMenu *rn_visibleGridMenu;
 #pragma mark - UIResponder
 ////////////////////////////////////////////////////////////////////////
 
-- (BOOL)canBecomeFirstResponder {
-    return YES;
-}
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     CGPoint point = RNCentroidOfTouchesInView(touches, self.view);
 
@@ -479,12 +475,6 @@ static RNGridMenu *rn_visibleGridMenu;
     self.headerView.frame = headerFrame;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    [self becomeFirstResponder];
-}
-
 - (BOOL)shouldAutorotate {
     return YES;
 }
@@ -497,7 +487,7 @@ static RNGridMenu *rn_visibleGridMenu;
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
 
     if ([self isViewLoaded] && self.view.window != nil) {
-        [self createScreenshotAndLayout];
+        [self createScreenshotAndLayoutWithScreenshotCompletion:nil];
     }
 }
 
@@ -565,18 +555,37 @@ static RNGridMenu *rn_visibleGridMenu;
     }
 }
 
-- (void)createScreenshotAndLayout {
+- (void)createScreenshotAndLayoutWithScreenshotCompletion:(dispatch_block_t)screenshotCompletion {
     if (self.blurLevel > 0.f) {
-        self.menuView.alpha = 0.f;
         self.blurView.alpha = 0.f;
+
+        self.menuView.alpha = 0.f;
         UIImage *screenshot = [self.parentViewController.view rn_screenshot];
         self.menuView.alpha = 1.f;
         self.blurView.alpha = 1.f;
-        UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel exclusionPath:self.blurExclusionPath];
-        self.blurView.layer.contents = (id)blur.CGImage;
+        self.blurView.layer.contents = (id)screenshot.CGImage;
 
-        [self.view setNeedsLayout];
-        [self.view layoutIfNeeded];
+        if (screenshotCompletion != nil) {
+            screenshotCompletion();
+        }
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0L), ^{
+            UIImage *blur = [screenshot rn_boxblurImageWithBlur:self.blurLevel exclusionPath:self.blurExclusionPath];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CATransition *transition = [CATransition animation];
+
+                transition.duration = 0.2;
+                transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                transition.type = kCATransitionFade;
+
+                [self.blurView.layer addAnimation:transition forKey:nil];
+                self.blurView.layer.contents = (id)blur.CGImage;
+
+                [self.view setNeedsLayout];
+                [self.view layoutIfNeeded];
+            });
+        });
     }
 }
 
@@ -593,64 +602,59 @@ static RNGridMenu *rn_visibleGridMenu;
     self.menuCenter = [self.view convertPoint:center toView:self.view];
     self.view.frame = parentViewController.view.bounds;
 
-    [self showAfterScreenshotDelay];
+    [self showAnimated:YES];
 }
 
-- (void)showAfterScreenshotDelay {
+- (void)showAnimated:(BOOL)animated {
     rn_visibleGridMenu = self;
 
     self.blurView = [[UIView alloc] initWithFrame:self.parentViewController.view.bounds];
     self.blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.blurView];
-    [self.blurView addSubview:self.menuView];
+    [self.view addSubview:self.menuView];
     if (self.headerView) {
         [self.menuView addSubview:self.headerView];
     }
 
-    [self createScreenshotAndLayout];
+    [self createScreenshotAndLayoutWithScreenshotCompletion:^{
+        if (animated) {
+            CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+            opacityAnimation.fromValue = @0.;
+            opacityAnimation.toValue = @1.;
+            opacityAnimation.duration = self.animationDuration * 0.5f;
+            
+            CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
 
-    CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    opacityAnimation.fromValue = @0.;
-    opacityAnimation.toValue = @1.;
-    opacityAnimation.duration = self.animationDuration * 0.5f;
-    [self.blurView.layer addAnimation:opacityAnimation forKey:nil];
+            CATransform3D startingScale = CATransform3DScale(self.menuView.layer.transform, 0, 0, 0);
+            CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.05, 1.05, 1.0);
+            CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.98, 0.98, 1.0);
+            CATransform3D endingScale = self.menuView.layer.transform;
 
-    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+            NSMutableArray *scaleValues = [NSMutableArray arrayWithObject:[NSValue valueWithCATransform3D:startingScale]];
+            NSMutableArray *keyTimes = [NSMutableArray arrayWithObject:@0.0f];
+            NSMutableArray *timingFunctions = [NSMutableArray arrayWithObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
 
-    CATransform3D startingScale = CATransform3DScale(self.menuView.layer.transform, 0, 0, 0);
-    CATransform3D overshootScale = CATransform3DScale(self.menuView.layer.transform, 1.05, 1.05, 1.0);
-    CATransform3D undershootScale = CATransform3DScale(self.menuView.layer.transform, 0.98, 0.98, 1.0);
-    CATransform3D endingScale = self.menuView.layer.transform;
-    
-    NSMutableArray *scaleValues = [NSMutableArray arrayWithObject:[NSValue valueWithCATransform3D:startingScale]];
-    NSMutableArray *keyTimes = [NSMutableArray arrayWithObject:@0.0f];
-    NSMutableArray *timingFunctions = [NSMutableArray arrayWithObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
-    
-    if (self.bounces) {
-        [scaleValues addObjectsFromArray:@[[NSValue valueWithCATransform3D:overshootScale],
-                                           [NSValue valueWithCATransform3D:undershootScale]]];
-        [keyTimes addObjectsFromArray:@[@0.5f,
-                                        @0.85f]];
-        [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    }
-    
-    [scaleValues addObject:[NSValue valueWithCATransform3D:endingScale]];
-    [keyTimes addObject:@1.0f];
-    [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    
-    scaleAnimation.values = scaleValues;
-    scaleAnimation.keyTimes = keyTimes;
-    scaleAnimation.timingFunctions = timingFunctions;
+            if (self.bounces) {
+                [scaleValues addObjectsFromArray:@[[NSValue valueWithCATransform3D:overshootScale], [NSValue valueWithCATransform3D:undershootScale]]];
+                [keyTimes addObjectsFromArray:@[@0.5f, @0.85f]];
+                [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+            }
 
-    CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-    animationGroup.animations = @[
-                                  scaleAnimation,
-                                  opacityAnimation
-                                  ];
-    animationGroup.duration = self.animationDuration;
+            [scaleValues addObject:[NSValue valueWithCATransform3D:endingScale]];
+            [keyTimes addObject:@1.0f];
+            [timingFunctions addObject:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 
-    [self.menuView.layer addAnimation:animationGroup forKey:nil];
-    [self becomeFirstResponder];
+            scaleAnimation.values = scaleValues;
+            scaleAnimation.keyTimes = keyTimes;
+            scaleAnimation.timingFunctions = timingFunctions;
+
+            CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+            animationGroup.animations = @[scaleAnimation, opacityAnimation];
+            animationGroup.duration = self.animationDuration;
+            
+            [self.menuView.layer addAnimation:animationGroup forKey:nil];
+        }
+    }];
 }
 
 - (void)dismiss {
@@ -820,7 +824,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
-
+    
     if (_touchesDidMove) {
         RNGridMenu *menu = [RNGridMenu visibleGridMenu];
         [menu touchesEnded:touches withEvent:event];
