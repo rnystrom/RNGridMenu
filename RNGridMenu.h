@@ -46,6 +46,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 + (instancetype)visibleGridMenu;
 
+@property (nonatomic, readonly) UIView *menuView;
+
 // the menu items. Instances of RNGridMenuItem
 @property (nonatomic, readonly) NSArray *items;
 
@@ -58,7 +60,13 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 // The background color of the main view (note this is a UIViewController subclass)
 // default black with 0.7 alpha
-@property (nonatomic, strong, readonly) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *backgroundColor;
+
+// defaults to nil, the path to be applied as a mask to the background image. if this path is set, cornerRadius is ignored
+@property (nonatomic, strong) UIBezierPath *backgroundPath;
+
+// defaults to 8 (only applied if backgroundPath == nil)
+@property (nonatomic, assign) CGFloat cornerRadius;
 
 // The size of an item
 // default {100, 100}
@@ -67,6 +75,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // The level of blur for the background image. Range is 0.0 to 1.0
 // default 0.3
 @property (nonatomic, assign) CGFloat blurLevel;
+// defaults to nil ( == the whole background gets blurred)
+@property (nonatomic, strong) UIBezierPath *blurExclusionPath;
 
 // The time in seconds for the show and dismiss animation
 // default 0.25f
@@ -112,7 +122,7 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // Dismiss the menu
 // This is called when the window is tapped. If tapped inside the view an item will be selected.
 // If tapped outside the view, the menu is simply dismissed.
-- (void)dismiss;
+- (void)dismissAnimated:(BOOL)animated;
 
 @end
 
