@@ -46,6 +46,8 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 
 + (instancetype)visibleGridMenu;
 
+@property (nonatomic, readonly) UIView *menuView;
+
 // the menu items. Instances of RNGridMenuItem
 @property (nonatomic, readonly) NSArray *items;
 
@@ -120,7 +122,7 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // Dismiss the menu
 // This is called when the window is tapped. If tapped inside the view an item will be selected.
 // If tapped outside the view, the menu is simply dismissed.
-- (void)dismiss;
+- (void)dismissAnimated:(BOOL)animated;
 
 @end
 
