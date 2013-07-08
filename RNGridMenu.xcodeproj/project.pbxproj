@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C5B2BC0C5CE302374D589E4 /* RNGridMenu.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 3C5B2773B1869FF61C9D079F /* RNGridMenu.podspec */; };
 		8619404D1767A8480052C089 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619404C1767A8480052C089 /* UIKit.framework */; };
 		8619404F1767A8480052C089 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8619404E1767A8480052C089 /* Foundation.framework */; };
 		861940511767A8480052C089 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861940501767A8480052C089 /* CoreGraphics.framework */; };
@@ -34,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C5B2773B1869FF61C9D079F /* RNGridMenu.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = RNGridMenu.podspec; sourceTree = "<group>"; };
 		861940491767A8480052C089 /* RNGridMenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNGridMenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8619404C1767A8480052C089 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8619404E1767A8480052C089 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -91,6 +93,7 @@
 				861940521767A8480052C089 /* example */,
 				8619404B1767A8480052C089 /* Frameworks */,
 				8619404A1767A8480052C089 /* Products */,
+				3C5B2773B1869FF61C9D079F /* RNGridMenu.podspec */,
 			);
 			sourceTree = "<group>";
 		};
@@ -228,6 +231,7 @@
 				86C675DA176B543D00000739 /* Default@2x.png in Resources */,
 				86C675E1176B545300000739 /* MainStoryboard_iPad.storyboard in Resources */,
 				86C675E2176B545300000739 /* MainStoryboard_iPhone.storyboard in Resources */,
+				3C5B2BC0C5CE302374D589E4 /* RNGridMenu.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
