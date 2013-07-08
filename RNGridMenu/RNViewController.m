@@ -127,6 +127,10 @@
 
     RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
+    av.bounces = NO;
+    av.animationDuration = 0.2;
+    av.blurExclusionPath = [UIBezierPath bezierPathWithOvalInRect:self.imageView.frame];
+    av.backgroundPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0.f, 0.f, av.itemSize.width*3, av.itemSize.height*3)];
     
     UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 44)];
     header.text = @"Example Header";
