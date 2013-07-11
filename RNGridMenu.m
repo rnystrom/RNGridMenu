@@ -10,15 +10,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Accelerate/Accelerate.h>
 
-
 CGFloat const kRNGridMenuDefaultDuration = 0.25f;
 CGFloat const kRNGridMenuDefaultBlur = 0.3f;
 CGFloat const kRNGridMenuDefaultWidth = 280;
 
-
-////////////////////////////////////////////////////////////////////////
 #pragma mark - Functions
-////////////////////////////////////////////////////////////////////////
 
 CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     CGFloat sumX = 0.f;
@@ -33,10 +29,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     return CGPointMake((CGFloat)round(sumX / touches.count), (CGFloat)round(sumY / touches.count));
 }
 
-
-////////////////////////////////////////////////////////////////////////
 #pragma mark - Categories
-////////////////////////////////////////////////////////////////////////
 
 @implementation UIView (Screenshot)
 
@@ -176,9 +169,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 
 @end
 
-////////////////////////////////////////////////////////////////////////
 #pragma mark - RNMenuItemView
-////////////////////////////////////////////////////////////////////////
 
 @interface RNMenuItemView : UIView
 
@@ -250,9 +241,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 
 @end
 
-////////////////////////////////////////////////////////////////////////
 #pragma mark - RNGridMenuItem
-////////////////////////////////////////////////////////////////////////
 
 @implementation RNGridMenuItem
 
@@ -307,9 +296,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 
 @end
 
-////////////////////////////////////////////////////////////////////////
 #pragma mark - RNGridMenu
-////////////////////////////////////////////////////////////////////////
 
 @interface RNGridMenu ()
 
@@ -317,6 +304,7 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 @property (nonatomic, strong) NSMutableArray *itemViews;
 @property (nonatomic, strong) RNMenuItemView *selectedItemView;
 @property (nonatomic, strong) UIView *blurView;
+@property (nonatomic, assign) BOOL parentViewCouldScroll;
 
 @end
 
@@ -382,9 +370,7 @@ static RNGridMenu *rn_visibleGridMenu;
     return nil;
 }
 
-////////////////////////////////////////////////////////////////////////
 #pragma mark - UIResponder
-////////////////////////////////////////////////////////////////////////
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     CGPoint point = RNCentroidOfTouchesInView(touches, self.view);
@@ -697,9 +683,7 @@ static RNGridMenu *rn_visibleGridMenu;
     [self rn_removeFromParentViewControllerCallingAppearanceMethods:YES];
 }
 
-////////////////////////////////////////////////////////////////////////
 #pragma mark - Private
-////////////////////////////////////////////////////////////////////////
 
 - (void)rn_addToParentViewController:(UIViewController *)parentViewController callingAppearanceMethods:(BOOL)callAppearanceMethods {
     if (self.parentViewController != nil) {
@@ -711,9 +695,19 @@ static RNGridMenu *rn_visibleGridMenu;
     [parentViewController.view addSubview:self.view];
     [self didMoveToParentViewController:self];
     if (callAppearanceMethods) [self endAppearanceTransition];
+    
+    if ([parentViewController.view respondsToSelector:@selector(setScrollEnabled:)] && [(UIScrollView *)parentViewController.view isScrollEnabled]) {
+        self.parentViewCouldScroll = YES;
+        [(UIScrollView *)parentViewController.view setScrollEnabled:NO];
+    }
 }
 
 - (void)rn_removeFromParentViewControllerCallingAppearanceMethods:(BOOL)callAppearanceMethods {
+    if (self.parentViewCouldScroll) {
+        [(UIScrollView *)self.parentViewController.view setScrollEnabled:YES];
+        self.parentViewCouldScroll = NO;
+    }
+    
     if (callAppearanceMethods) [self beginAppearanceTransition:NO animated:NO];
     [self willMoveToParentViewController:nil];
     [self.view removeFromSuperview];
