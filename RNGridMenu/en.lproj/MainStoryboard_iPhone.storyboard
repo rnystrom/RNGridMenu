@@ -61,7 +61,6 @@ Nulla vitae elit libero, a pharetra augue. Sed posuere consectetur est at lobort
         <class className="RNViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/RNViewController.h"/>
             <relationships>
-                <relationship kind="action" name="onShowButton:"/>
                 <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
