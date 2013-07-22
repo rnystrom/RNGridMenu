@@ -56,6 +56,15 @@ Nulla vitae elit libero, a pharetra augue. Sed posuere consectetur est at lobort
     <resources>
         <image name="Profile_256.png" width="256" height="256"/>
     </resources>
+    <classes>
+        <class className="RNViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RNViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="onShowButton:"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
