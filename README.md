@@ -12,7 +12,7 @@ A grid based menu view with field depth and bounce animation: inspired by Mailbo
 Installation with [CocoaPods](http://cocoapods.org/) made available by [thaberkern](https://github.com/thaberkern). Just add this line to your Podfile.
 
 ```
-pod 'RNGridMenu', '~> 0.1.1'
+pod 'RNGridMenu', '~> 0.1.2'
 ```
 
 Drag and drop the <code>RNGridMenu</code> .h and .m files into your project. To get this working, you'll need to include the following frameworks:
