@@ -516,7 +516,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)layoutAsGrid {
     NSInteger itemCount = self.items.count;
-    NSInteger rowCount = floorf(sqrtf(itemCount));
+    NSInteger rowCount = ceilf(sqrtf(itemCount));
 
     CGFloat height = self.itemSize.height * rowCount;
     CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
@@ -527,12 +527,13 @@ static RNGridMenu *rn_visibleGridMenu;
 
     for (NSInteger i = 0; i < rowCount; i++) {
         NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
+        NSInteger rowStartIndex = i * rowLength;
+
         NSInteger offset = 0;
         if ((i + 1) * rowLength > itemCount) {
             rowLength = itemCount - i * rowLength;
-            offset++;
         }
-        NSArray *subItems = [self.itemViews subarrayWithRange:NSMakeRange(i * rowLength + offset, rowLength)];
+        NSArray *subItems = [self.itemViews subarrayWithRange:NSMakeRange(rowStartIndex, rowLength)];
         CGFloat itemWidth = floorf(width / (CGFloat)rowLength);
         [subItems enumerateObjectsUsingBlock:^(RNMenuItemView *itemView, NSUInteger idx, BOOL *stop) {
             itemView.frame = CGRectMake(idx * itemWidth, i * itemHeight + headerOffset, itemWidth, itemHeight);
