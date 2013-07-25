@@ -47,6 +47,22 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     return image;
 }
 
+- (UIImage *)rn_screenshotForScrollViewWithContentOffset:(CGPoint)contentOffset {
+    UIGraphicsBeginImageContext(self.bounds.size);
+    //need to translate the context down to the current visible portion of the scrollview
+    CGContextTranslateCTM(UIGraphicsGetCurrentContext(), 0, -contentOffset.y);
+    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // helps w/ our colors when blurring
+    // feel free to adjust jpeg quality (lower = higher perf)
+    NSData *imageData = UIImageJPEGRepresentation(image, 0.55);
+    image = [UIImage imageWithData:imageData];
+    
+    return image;
+}
+
 @end
 
 
@@ -546,7 +562,9 @@ static RNGridMenu *rn_visibleGridMenu;
         self.blurView.alpha = 0.f;
 
         self.menuView.alpha = 0.f;
-        UIImage *screenshot = [self.parentViewController.view rn_screenshot];
+        UIImage *screenshot = ([self.parentViewController.view isKindOfClass:[UIScrollView class]] ?
+                               [self.parentViewController.view rn_screenshotForScrollViewWithContentOffset:[(UIScrollView *)self.parentViewController.view contentOffset]] :
+                               [self.parentViewController.view rn_screenshot]);        
         self.menuView.alpha = 1.f;
         self.blurView.alpha = 1.f;
         self.blurView.layer.contents = (id)screenshot.CGImage;
