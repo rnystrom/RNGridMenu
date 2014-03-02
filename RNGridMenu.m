@@ -7,8 +7,9 @@
 //
 
 #import "RNGridMenu.h"
-#import <QuartzCore/QuartzCore.h>
 #import <Accelerate/Accelerate.h>
+
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 CGFloat const kRNGridMenuDefaultDuration = 0.25f;
 CGFloat const kRNGridMenuDefaultBlur = 0.3f;
@@ -34,8 +35,16 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
 @implementation UIView (Screenshot)
 
 - (UIImage *)rn_screenshot {
+
     UIGraphicsBeginImageContext(self.bounds.size);
-    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    }
+    else {
+        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    }
+
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
@@ -51,15 +60,20 @@ CGPoint RNCentroidOfTouchesInView(NSSet *touches, UIView *view) {
     UIGraphicsBeginImageContext(self.bounds.size);
     //need to translate the context down to the current visible portion of the scrollview
     CGContextTranslateCTM(UIGraphicsGetCurrentContext(), 0, -contentOffset.y);
-    [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    }
+    else {
+        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
+    }
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     // helps w/ our colors when blurring
     // feel free to adjust jpeg quality (lower = higher perf)
     NSData *imageData = UIImageJPEGRepresentation(image, 0.55);
     image = [UIImage imageWithData:imageData];
-    
+
     return image;
 }
 
@@ -564,7 +578,7 @@ static RNGridMenu *rn_visibleGridMenu;
         self.menuView.alpha = 0.f;
         UIImage *screenshot = ([self.parentViewController.view isKindOfClass:[UIScrollView class]] ?
                                [self.parentViewController.view rn_screenshotForScrollViewWithContentOffset:[(UIScrollView *)self.parentViewController.view contentOffset]] :
-                               [self.parentViewController.view rn_screenshot]);        
+                               [self.parentViewController.view rn_screenshot]);
         self.menuView.alpha = 1.f;
         self.blurView.alpha = 1.f;
         self.blurView.layer.contents = (id)screenshot.CGImage;
@@ -714,7 +728,7 @@ static RNGridMenu *rn_visibleGridMenu;
     [parentViewController.view addSubview:self.view];
     [self didMoveToParentViewController:self];
     if (callAppearanceMethods) [self endAppearanceTransition];
-    
+
     if ([parentViewController.view respondsToSelector:@selector(setScrollEnabled:)] && [(UIScrollView *)parentViewController.view isScrollEnabled]) {
         self.parentViewCouldScroll = YES;
         [(UIScrollView *)parentViewController.view setScrollEnabled:NO];
@@ -726,7 +740,7 @@ static RNGridMenu *rn_visibleGridMenu;
         [(UIScrollView *)self.parentViewController.view setScrollEnabled:YES];
         self.parentViewCouldScroll = NO;
     }
-    
+
     if (callAppearanceMethods) [self beginAppearanceTransition:NO animated:NO];
     [self willMoveToParentViewController:nil];
     [self.view removeFromSuperview];
@@ -838,7 +852,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
-    
+
     if (_touchesDidMove) {
         RNGridMenu *menu = [RNGridMenu visibleGridMenu];
         [menu touchesEnded:touches withEvent:event];
@@ -847,7 +861,7 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesCancelled:touches withEvent:event];
-    
+
     if (_touchesDidMove) {
         RNGridMenu *menu = [RNGridMenu visibleGridMenu];
         [menu touchesCancelled:touches withEvent:event];
