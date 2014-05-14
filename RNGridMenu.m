@@ -590,6 +590,8 @@ static RNGridMenu *rn_visibleGridMenu;
                 [self.view layoutIfNeeded];
             });
         });
+    } else {
+      if (screenshotCompletion) screenshotCompletion();
     }
 }
 
